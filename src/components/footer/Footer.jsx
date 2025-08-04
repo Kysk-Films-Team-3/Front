@@ -1,0 +1,63 @@
+import React from 'react';
+import './Footer.css';
+import {Link} from "react-router-dom";
+
+export const Footer = () => {
+    return (
+        <footer className="footer">
+            <div className="footer_top">
+                <div className="footer_left">
+                    <div className="footer_icons">
+                        <div className="footer_icon"></div>
+                        <div className="footer_icon"></div>
+                        <div className="footer_icon"></div>
+                        <div className="footer_icon"></div>
+                        <div className="footer_icon"></div>
+                    </div>
+
+                    <div className="footer_help">
+                        <button> Потрібна допомога? </button>
+                    </div>
+                </div>
+
+                <div className="footer_columns">
+                    <div className="footer_col">
+                        <h4>Kysk</h4>
+                        <Link to="/about" className="footer_col_link">О нас</Link>
+                        <Link to="/careers" className="footer_col_link">Кар'єра в Kysk</Link>
+                        <Link to="/agents" className="footer_col_link">Агенти Kysk</Link>
+                    </div>
+                    <div className="footer_col">
+                        <h4>Допомога</h4>
+                        <Link to="/faq" className="footer_col_link">Запитання та відповіді</Link>
+                        <Link to="/devices" className="footer_col_link">Список пристроїв</Link>
+                        <Link to="/distributors" className="footer_col_link">Дистриб'юторам</Link>
+                        <Link to="/contacts" className="footer_col_link">Контакти</Link>
+                    </div>
+                    <div className="footer_col">
+                        <h4>Інше</h4>
+                        <Link to="/offers" className="footer_col_link">Акції та пропозиції</Link>
+                    </div>
+                </div>
+            </div>
+            <div className="footer_bottom">
+                <Link to="/" className="logo">
+                    <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754083133/Logo.png" className="footer_logo" alt="Логотип" />
+                </Link>
+                <div className="footer_text">
+                    <p>
+                        © 2012-2025 ТОВ «Kysk»<br />
+                        Загальноукраїнські канали доступні для безкоштовного перегляду цілодобово <br />
+                        ПЗ ТОВ «Окко» полягає у реєстрі вітчизняного ПЗ
+                    </p>
+                    <p>
+                        <Link to="/terms" className="footer_link"> Угода користувача</Link>
+                        <Link to="/privacy" className="footer_link"> Політика конфіденційності</Link>
+                </p>
+                    <Link to="/terms" className="footer_link"> На інформаційному ресурсі застосовуються рекомендаційні технології відповідно до Правил </Link>
+                </div>
+            </div>
+        </footer>
+
+    );
+};

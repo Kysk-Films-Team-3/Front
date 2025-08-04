@@ -1,0 +1,199 @@
+.recovery_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.recovery_modal {
+    background-color: #F8F8FE;
+    padding: 40px;
+    border-radius: 16px;
+    width: 850px;
+    height: 519px;
+    color: #000000;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.recovery_close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #262630;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.recovery_close:hover {
+    color: #838387;
+}
+
+.close_icon {
+    width: 20px;
+    height: 20px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754250879/Closewindows.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.close_icon:hover  {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754250879/Closewindowshover.png');
+}
+
+.recovery_title {
+    font-size: 32px;
+    text-align: center;
+    margin: 0;
+}
+
+.recovery_description {
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+    color: #000000;
+    margin: 0 auto 12px;
+    max-width: 620px;
+}
+
+.recovery_form {
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 0 auto;
+}
+
+.recovery_input_group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+}
+
+.recovery_input {
+    background: #F8F8FE;
+    border: 1px solid #9999A1;
+    padding: 18px 20px 6px 20px;
+    border-radius: 6px;
+    color: #000000;
+    font-size: 16px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    height: 52px;
+    transition: border-color 0.3s ease, height 0.3s ease, padding 0.3s ease;
+}
+
+.recovery_input::placeholder {
+    color: transparent;
+}
+
+.recovery_input:focus,
+.recovery_input:not(:placeholder-shown) {
+    height: 69px;
+    border-color: #4E55D4;
+    padding-top: 28px;
+}
+
+.recovery_input_group label {
+    position: absolute;
+    left: 20px;
+    top: 18px;
+    font-size: 14px;
+    color: #9999A1;
+    pointer-events: none;
+    transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+}
+
+.recovery_input:focus + label,
+.recovery_input:not(:placeholder-shown) + label {
+    top: 6px;
+    font-size: 12px;
+    color: #9999a1;
+}
+
+.recovery_input.error {
+    border-color: #e50914 !important;
+    color: #9999a1;
+}
+
+.error_text {
+    color: #e50914;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.error_icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754252016/Warning.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.recovery_button {
+    background: rgba(78, 85, 212, 0.5);
+    color: #fff;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 480px;
+    height: 52px;
+}
+
+.recovery_button:hover {
+    background: #4E55D4;
+}
+
+.recovery_button.valid {
+    background: #3429B0;
+}
+
+.recovery_button.valid:hover {
+    background: #2a1f8a;
+}
+
+.recovery_modal .recovery_back {
+    background: #EBEBF5;
+    border: none;
+    width: 480px;
+    height: 52px;
+    color: #262630;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.recovery_modal .recovery_back:hover {
+    border: 1px solid #000000;
+    text-decoration: none;
+}
