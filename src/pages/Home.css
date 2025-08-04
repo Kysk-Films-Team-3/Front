@@ -1,7 +1,122 @@
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #262630;
+.home {
+    background: #262630;
     min-height: 100vh;
+    color: #fff;
+    display: flex;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.home_carousel_container {
+    position: relative;
+    width: 100%;
+    margin-top: 60px;
+    border-radius: 0;
+}
+
+.home_carousel_wrapper {
+    height: 600px;
+    margin: 0 auto;
+    position: relative;
+    overflow: visible;
+}
+
+.home_carousel_track {
+    display: flex;
+    height: 100%;
+    gap: 20px;
+    transition: transform 0.5s ease;
+}
+
+.home_carousel_track::-webkit-scrollbar {
+    display: none;
+}
+
+.home_carousel_slide {
+    min-width: 900px;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.3s ease;
+}
+
+.home_carousel_slide:hover {
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+.home_slide_background {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+}
+
+.home_slide1 {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754316279/Supoerman.png');
+}
+.home_slide1:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754316279/Supoermanhover.png');
+}
+
+.home_slide2 {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754307643/Fantasticfours.png');
+}
+.home_slide2:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315395/fantastikfourhover.png');
+}
+
+.home_slide3 {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315914/Calmargame.png');
+}
+.home_slide3:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315919/Calmargamehover.png');
+}
+
+.home_slide4 {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754318590/Wensday.png');
+}
+.home_slide4:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754318579/Wensdayhover.png');
+}
+
+.home_nav_button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 10;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 48px;
+    transition: all 0.3s ease;
+}
+
+.home_nav_button.show {
+    opacity: 1;
+}
+
+.home_nav_button.prev {
+    left: 60px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754320717/carouselleft.png');
+}
+
+.home_nav_button.prev:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754320732/carousellefthover.png');
+}
+
+.home_nav_button.next {
+    right: 60px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754320723/carouselright.png');
+}
+
+.home_nav_button.next:hover {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754320723/carouselrighthover.png');
 }
