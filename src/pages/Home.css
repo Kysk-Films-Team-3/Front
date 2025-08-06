@@ -3,6 +3,7 @@
     min-height: 100vh;
     color: #fff;
     display: flex;
+    flex-direction: column;
     padding: 0;
     overflow-x: hidden;
 }
@@ -14,18 +15,24 @@
     border-radius: 0;
 }
 
+.home_carousel_outer_wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
 .home_carousel_wrapper {
     height: 600px;
     margin: 0 auto;
     position: relative;
     overflow: visible;
+    padding: 15px 0;
 }
 
 .home_carousel_track {
     display: flex;
-    height: 100%;
+    height: calc(100% - 30px);
     gap: 20px;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease-in-out;
 }
 
 .home_carousel_track::-webkit-scrollbar {
@@ -33,11 +40,13 @@
 }
 
 .home_carousel_slide {
-    min-width: 900px;
+    min-width: 890px;
+    min-height: 600px;
     position: relative;
     cursor: pointer;
     padding: 0;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .home_carousel_slide:hover {
@@ -48,37 +57,58 @@
 .home_slide_background {
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    background: center/cover no-repeat;
     border-radius: 20px;
 }
 
 .home_slide1 {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754316279/Supoerman.png');
 }
-.home_slide1:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754316279/Supoermanhover.png');
-}
 
 .home_slide2 {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754307643/Fantasticfours.png');
-}
-.home_slide2:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315395/fantastikfourhover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315572/Fantasticfours.png');
 }
 
 .home_slide3 {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315914/Calmargame.png');
 }
-.home_slide3:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315919/Calmargamehover.png');
-}
 
 .home_slide4 {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754318590/Wensday.png');
 }
-.home_slide4:hover {
+
+.home_slide_background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: center/cover no-repeat;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.home_carousel_slide:hover .home_slide_background.home_slide1::before {
+    opacity: 1;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754316279/Supoermanhover.png');
+}
+
+.home_carousel_slide:hover .home_slide_background.home_slide2::before {
+    opacity: 1;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315395/fantastikfourhover.png');
+}
+
+.home_carousel_slide:hover .home_slide_background.home_slide3::before {
+    opacity: 1;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754315919/Calmargamehover.png');
+}
+
+.home_carousel_slide:hover .home_slide_background.home_slide4::before {
+    opacity: 1;
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754318579/Wensdayhover.png');
 }
 
@@ -86,16 +116,13 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: transparent;
+    background: transparent center/48px no-repeat;
     border: none;
     width: 48px;
     height: 48px;
     cursor: pointer;
     opacity: 0;
     z-index: 10;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 48px;
     transition: all 0.3s ease;
 }
 
@@ -119,4 +146,57 @@
 
 .home_nav_button.next:hover {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1754320723/carouselrighthover.png');
+}
+
+.home_categories {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 30px;
+    margin-top: 30px;
+    padding: 0 20px;
+    justify-content: center;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.home_categories::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.home_categories_button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: #4E55D4;
+    color: #fff;
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.home_categories_button:hover {
+    background-color: #3429B0;
+}
+
+.home_categories_button.active {
+    background-color: #fff;
+    color: #000000;
+}
+
+.home_categories_button.active:hover {
+    background-color: #EBEBF5;
+}
+
+.home_button_icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin-right: 10px;
 }

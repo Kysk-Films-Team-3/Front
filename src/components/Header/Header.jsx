@@ -6,11 +6,14 @@ export const Header = ({ isLoggedIn, onLoginClick, onLogout }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isSearchHovered, setIsSearchHovered] = useState(false);
+
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
     const handleLogoutClick = () => {
         onLogout();
         setIsDropdownOpen(false);
     };
+
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -18,7 +21,7 @@ export const Header = ({ isLoggedIn, onLoginClick, onLogout }) => {
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target) &&
-                !event.target.closest('.profile-toggle')
+                !event.target.closest('.header_profile_switch')
             ) {
                 setIsDropdownOpen(false);
             }
@@ -66,64 +69,64 @@ export const Header = ({ isLoggedIn, onLoginClick, onLogout }) => {
                                     <div className="header_search_films">
                                         <div className="header_film_card">
                                             <Link to="/film/1">
-                                        <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142247/Thebrothersunfilm.png" className="header_films_preview" alt="Популярний фільм"  />
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142247/Thebrothersunfilm.png" className="header_films_preview" alt="Популярний фільм"  />
                                             </Link>
                                         </div>
                                         <div className="header_film_card">
                                             <Link to="/film/2">
-                                        <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142256/Spidermanfilm.png" className="header_films_preview" alt="Популярний фільм"  />
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142256/Spidermanfilm.png" className="header_films_preview" alt="Популярний фільм"  />
                                             </Link>
-                                    </div>
-                                    <div className="header_film_card">
-                                        <Link to="/film/3">
-                                        <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142262/Scobydoofilm.png" className="header_films_preview" alt="Популярний фільм"  />
-                                        </Link>
-                                    </div>
+                                        </div>
+                                        <div className="header_film_card">
+                                            <Link to="/film/3">
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142262/Scobydoofilm.png" className="header_films_preview" alt="Популярний фільм"  />
+                                            </Link>
+                                        </div>
                                         <div className="header_film_card">
                                             <Link to="/film/4">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142091/Suitsfilm.png" className="header_films_preview" alt="Популярний фільм"  />
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142091/Suitsfilm.png" className="header_films_preview" alt="Популярний фільм"  />
                                             </Link>
-                                </div>
+                                        </div>
                                         <div className="header_film_card">
                                             <Link to="/film/5">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142234/Monkfilm.png" className="header_films_preview" alt="Популярний фільм"  />
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142234/Monkfilm.png" className="header_films_preview" alt="Популярний фільм"  />
                                             </Link>
-                                </div>
+                                        </div>
                                         <div className="header_film_card">
                                             <Link to="/film/6">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142240/Dragon2film.png" className="header_films_preview" alt="Популярний фільм"  />
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142240/Dragon2film.png" className="header_films_preview" alt="Популярний фільм"  />
                                             </Link>
                                         </div>
 
-                                </div>
+                                    </div>
 
                                     <div className="header_search_actors">
                                         <div className="header_actor_card">
                                             <Link to="/actor/123">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159030/Stathamactor.png" className="header_actor_preview" alt="Популярний актор"  />
-                                            <p className="header_actor_name">Джейсон Стетхем</p>
-                                            <p className="header_actor_role">Актор</p>
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159030/Stathamactor.png" className="header_actor_preview" alt="Популярний актор"  />
+                                                <p className="header_actor_name">Джейсон Стетхем</p>
+                                                <p className="header_actor_role">Актор</p>
                                             </Link>
                                         </div>
                                         <div className="header_actor_card">
                                             <Link to="/actor/123">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159112/DiCaprioactor.png" className="header_actor_preview" alt="Популярний актор"  />
-                                            <p className="header_actor_name">Леонардо Ді Капріо</p>
-                                            <p className="header_actor_role">Актор</p>
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159112/DiCaprioactor.png" className="header_actor_preview" alt="Популярний актор"  />
+                                                <p className="header_actor_name">Леонардо Ді Капріо</p>
+                                                <p className="header_actor_role">Актор</p>
                                             </Link>
                                         </div>
                                         <div className="header_actor_card">
                                             <Link to="/actor/123">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159069/Robbieactor.png" className="header_actor_preview" alt="Популярний актор"  />
-                                            <p className="header_actor_name">Марго Роббі</p>
-                                            <p className="header_actor_role">Актриса</p>
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159069/Robbieactor.png" className="header_actor_preview" alt="Популярний актор"  />
+                                                <p className="header_actor_name">Марго Роббі</p>
+                                                <p className="header_actor_role">Актриса</p>
                                             </Link>
                                         </div>
                                         <div className="header_actor_card">
                                             <Link to="/actor/123">
-                                            <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159100/Pattinsonactor.png" className="header_actor_preview" alt="Популярний актор"  />
-                                            <p className="header_actor_name">Роберт Паттінсон</p>
-                                            <p className="header_actor_role">Актор</p>
+                                                <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159100/Pattinsonactor.png" className="header_actor_preview" alt="Популярний актор"  />
+                                                <p className="header_actor_name">Роберт Паттінсон</p>
+                                                <p className="header_actor_role">Актор</p>
                                             </Link>
                                         </div>
                                     </div>
@@ -142,7 +145,6 @@ export const Header = ({ isLoggedIn, onLoginClick, onLogout }) => {
                     >
                         <div
                             className={`header_search_right_icon ${isSearchOpen ? 'open' : isSearchHovered ? 'hover' : ''}`}
-                            onClick={() => setIsSearchOpen(!isSearchOpen)}
                             onMouseEnter={() => setIsSearchHovered(true)}
                             onMouseLeave={() => setIsSearchHovered(false)}
                         />
@@ -167,7 +169,6 @@ export const Header = ({ isLoggedIn, onLoginClick, onLogout }) => {
                                 className="header_profile_switch"
                             >
                                 <div
-                                    onClick={toggleDropdown}
                                     className={`header_arrow ${isDropdownOpen ? 'open' : ''}`}
                                     aria-label={isDropdownOpen ? "Закрити меню" : "Відкрити меню"}
                                 />
