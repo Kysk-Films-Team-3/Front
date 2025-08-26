@@ -1,58 +1,62 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './VerifyCode.css';
 import {
-    isValidVerificationCode,
     isValidDigit,
+    isValidVerificationCode,
     getVerificationCodeError
 } from '../../validation/validation';
-import './VerifyCode.css';
 
-export const VerifyCode = ({ isOpen, onClose, onResendCode }) => {
-    const LENGTH = 5;
+const LENGTH = 5;
+
+export const VerifyCode = ({ isOpen, onClose, emailOrPhone, onVerified }) => {
     const [code, setCode] = useState(new Array(LENGTH).fill(''));
     const [error, setError] = useState('');
-    const [isValid, setIsValid] = useState(false);
-
+    const [submitted, setSubmitted] = useState(false);
+    const [generatedCode, setGeneratedCode] = useState('');
     const inputsRef = useRef([]);
-    const modalRef = useRef(null);
+    const verifyRef = useRef(null);
 
     useEffect(() => {
+        if (!isOpen) return;
+
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose();
-            }
+            if (verifyRef.current && !verifyRef.current.contains(event.target)) onClose();
         };
 
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
+        document.addEventListener('mousedown', handleClickOutside);
+        document.body.style.overflow = 'hidden';
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            document.body.style.overflow = '';
         };
     }, [isOpen, onClose]);
 
     useEffect(() => {
-        setIsValid(isValidVerificationCode(code, LENGTH));
-    }, [code]);
+        if (isOpen && emailOrPhone) {
+            const newVerifyCode = Array.from({ length: LENGTH }, () => Math.floor(Math.random() * 10)).join('');
+            setGeneratedCode(newVerifyCode);
+            alert(`Тестовий код: ${newVerifyCode}`);
+            setCode(new Array(LENGTH).fill(''));
+            setError('');
+            setSubmitted(false);
+            setTimeout(() => focusInput(0), 100);
+        }
+    }, [isOpen, emailOrPhone]);
 
     if (!isOpen) return null;
 
     const focusInput = (index) => {
-        if (inputsRef.current[index]) {
-            inputsRef.current[index].focus();
-        }
+        if (inputsRef.current[index]) inputsRef.current[index].focus();
     };
 
-    const handleChange = (e, index) => {
-        const val = e.target.value;
-        if (isValidDigit(val)) {
+    const handleChange = (value, index) => {
+        if (isValidDigit(value)) {
             const newCode = [...code];
-            newCode[index] = val;
+            newCode[index] = value;
             setCode(newCode);
             setError('');
-            if (val !== '' && index < LENGTH - 1) {
-                focusInput(index + 1);
-            }
+            if (value && index < LENGTH - 1) focusInput(index + 1);
         }
     };
 
@@ -63,111 +67,82 @@ export const VerifyCode = ({ isOpen, onClose, onResendCode }) => {
             if (newCode[index] !== '') {
                 newCode[index] = '';
                 setCode(newCode);
-                setError('');
             } else if (index > 0) {
                 focusInput(index - 1);
                 newCode[index - 1] = '';
                 setCode(newCode);
-                setError('');
             }
         }
-        else if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            navigator.clipboard.readText().then(text => {
-                const digits = text.replace(/\D/g, '').slice(0, LENGTH);
-                if (digits.length > 0) {
-                    const newCode = [...code];
-                    for (let i = 0; i < LENGTH && i < digits.length; i++) {
-                        newCode[i] = digits[i];
-                    }
-                    setCode(newCode);
-                    setError('');
-                    const nextIndex = Math.min(digits.length, LENGTH - 1);
-                    focusInput(nextIndex);
-                }
-            });
-        }
-    };
-
-    const validate = () => {
-        const errorMessage = getVerificationCodeError(code, LENGTH);
-        if (errorMessage) {
-            setError(errorMessage);
-            return false;
-        }
-
-        setError('');
-        return true;
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (validate()) {
-            const fullCode = code.join('');
-            console.log('Код підтверджено: ' + fullCode);
+        setSubmitted(true);
+
+        const errorMessage = getVerificationCodeError(code, LENGTH);
+        if (errorMessage) {
+            setError(errorMessage);
+            return;
+        }
+
+        const entered = code.join('');
+        if (entered === generatedCode) {
+            onVerified();
+        } else {
+            setError('Невірний код');
         }
     };
 
-    const handleResendCode = () => {
-        if (onResendCode) {
-            onResendCode();
-        }
+    const handleResend = () => {
+        const newCode = Array.from({ length: LENGTH }, () => Math.floor(Math.random() * 10)).join('');
+        setGeneratedCode(newCode);
+        alert(`Тестовий код: ${newCode}`);
         setCode(new Array(LENGTH).fill(''));
         setError('');
-        setIsValid(false);
+        setSubmitted(false);
         setTimeout(() => focusInput(0), 100);
     };
 
+    const isCodeValid = isValidVerificationCode(code, LENGTH);
+
     return (
         <div className="verify_overlay">
-            <div className="verify_modal" ref={modalRef}>
-                <button className="verify_close" onClick={onClose}>✕</button>
-
-                <h2 className="verify_title">Скинути пароль</h2>
-
-                <p className="verify_description">
-                    Щоб продовжити, виконайте цей крок підтвердження. Ми надіслали одноразовий
-                    пароль на електронну адресу something@gmail.com. Будь ласка, введіть його
-                    нижче.
-                </p>
-
-                <form className="verify_form" onSubmit={handleSubmit} noValidate>
+            <div className={`verify_modal ${submitted && error ? 'has-error' : ''}`} ref={verifyRef}>
+                <div className="verify_close" onClick={onClose}></div>
+                <form className="verify_form" onSubmit={handleSubmit}>
+                    <div className="verify_title">Скинути пароль</div>
+                    <div className="verify_description">
+                        Щоб продовжити, виконайте цей крок підтвердження. Ми надіслали одноразовий пароль на електронну адресу {" "}
+                        <span className="verify_email">{emailOrPhone}.</span> Будь ласка, введіть його <br/> нижче.
+                    </div>
                     <div className="verify_input_group">
-                        {code.map((num, i) => (
+                        {code.map((digit, idx) => (
                             <input
-                                key={i}
+                                key={idx}
                                 type="text"
-                                inputMode="numeric"
-                                maxLength="1"
-                                className={`verify_input ${error ? 'error' : ''}`}
-                                value={num}
-                                onChange={(e) => handleChange(e, i)}
-                                onKeyDown={(e) => handleKeyDown(e, i)}
-                                ref={el => { inputsRef.current[i] = el; }}
-                                autoFocus={i === 0}
+                                maxLength={1}
+                                value={digit}
+                                ref={(el) => (inputsRef.current[idx] = el)}
+                                onChange={(e) => handleChange(e.target.value, idx)}
+                                onKeyDown={(e) => handleKeyDown(e, idx)}
+                                className={`verify_input ${submitted && error ? 'error' : ''}`}
                             />
                         ))}
                     </div>
-
-                    {error && (
+                    {submitted && error && (
                         <div className="verify_error_text">
                             <div className="verify_error_icon"></div>
                             {error}
                         </div>
                     )}
-
-                    <button
-                        type="submit"
-                        className={`verify_button ${isValid ? 'valid' : ''}`}
-                    >
-                        Продовжити
+                    <button type="submit" className={`verify_button ${isCodeValid ? 'valid' : ''}`}>
+                        Підтвердити
+                    </button>
+                    <button type="button" className="verify_resend" onClick={handleResend}>
+                        <span className="verify_refresh_icon"></span>
+                        Надіслати код повторно
                     </button>
                 </form>
-
-                <button className="verify_resend" onClick={handleResendCode}>
-                    <div className="verify_refresh_icon"></div>
-                    Надіслати код повторно
-                </button>
             </div>
         </div>
     );

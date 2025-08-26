@@ -1,7 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { isValidEmailOrPhone, isValidPassword } from '../../validation/validation';
+import { useState, useRef, useEffect } from 'react';
 import './Login.css';
-export const Login = ({ isOpen, onClose, onLogin, onForgot }) => {
+import { isValidEmailOrPhone, isValidPassword } from '../../validation/validation';
+import { loginUserAPI, saveRememberMe, getRememberedUser } from '../../services/api';
+
+export const Login = ({ isOpen, onClose, onForgot, onRegisterClick, onLoginSuccess }) => {
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -10,45 +12,60 @@ export const Login = ({ isOpen, onClose, onLogin, onForgot }) => {
     const [errors, setErrors] = useState({ emailOrPhone: '', password: '' });
     const passwordInputRef = useRef(null);
     const toggleButtonRef = useRef(null);
-    const modalRef = useRef(null);
+    const loginRef = useRef(null);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const mockUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]');
+
+        if (mockUsers.length > 0) {
+            const usersText = mockUsers
+                .map((u, i) => `${i + 1}. Email: ${u.emailOrPhone}, Password: ${u.password}`)
+                .join('\n\n');
+
+            console.log('mockUsers при открытии:', mockUsers);
+            alert(`mockUsers:\n\n${usersText}`);
+        }
+
+        const rememberedUser = getRememberedUser();
+        setEmailOrPhone(rememberedUser || '');
+        setRememberMe(!!rememberedUser);
+        setPassword('');
+        setErrors({ emailOrPhone: '', password: '' });
+    }, [isOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose();
-            }
+            if (loginRef.current && !loginRef.current.contains(event.target)) onClose();
         };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen, onClose]);
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = ''; };
+    }, [isOpen]);
 
     const handleFocus = () => setFocused(true);
-
     const handleBlur = (e) => {
         const related = e.relatedTarget;
         if (related === passwordInputRef.current || related === toggleButtonRef.current) return;
         setFocused(false);
     };
 
-    const handleToggleClick = () => {
-        setShowPassword((show) => !show);
+    const handleShowPassword = () => {
+        setShowPassword(prev => !prev);
         passwordInputRef.current?.focus();
     };
 
-    const validate = () => {
+    const validateFields = () => {
         const newErrors = { emailOrPhone: '', password: '' };
         let valid = true;
 
         if (!isValidEmailOrPhone(emailOrPhone.trim())) {
-            newErrors.emailOrPhone = 'Введіть коректний email або номер телефону';
+            newErrors.emailOrPhone = 'Будь ласка, введіть дійсну електронну адресу.';
             valid = false;
         }
 
@@ -61,42 +78,68 @@ export const Login = ({ isOpen, onClose, onLogin, onForgot }) => {
         return valid;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
-            setErrors({ emailOrPhone: '', password: '' });
-            onLogin({ emailOrPhone, password });
+
+        const fieldsValid = validateFields();
+        if (!fieldsValid) return;
+
+        try {
+            const response = await loginUserAPI(emailOrPhone, password);
+
+            if (response.success) {
+                saveRememberMe(emailOrPhone, rememberMe);
+                localStorage.setItem('user', JSON.stringify(response.user));
+
+                onLoginSuccess(response.user);
+            } else {
+                const apiErrors = { emailOrPhone: '', password: '' };
+                const msg = response.message?.toLowerCase() || '';
+
+                if (msg.includes('не знайдений') || msg.includes('not found')) {
+                    apiErrors.emailOrPhone = response.message;
+                } else if (msg.includes('пароль') || msg.includes('password')) {
+                    apiErrors.password = response.message;
+                } else {
+                    apiErrors.password = response.message;
+                }
+
+                setErrors(apiErrors);
+            }
+        } catch {
+            setErrors({ emailOrPhone: '', password: 'Помилка при спробі увійти' });
         }
     };
 
+    const canSubmit = isValidEmailOrPhone(emailOrPhone) && isValidPassword(password);
+
     return (
-        <div className="login_overlay">
-            <div className="login_modal" ref={modalRef}>
-                <button className="login_close" onClick={onClose}>
-                    <div className="login_close_icon"></div>
-                </button>
-                <h2 className="login_title">Вхід</h2>
+        <div className="login_overlay" role="dialog" aria-modal="true">
+            <div className={`login_modal ${errors.emailOrPhone || errors.password ? 'has-errors' : ''}`} ref={loginRef}>
+                <div className="login_close_icon" onClick={onClose}></div>
+                <div className="login_title">Вхід</div>
+
                 <form className="login_form" onSubmit={handleSubmit}>
-                    <div className="login_input_group" style={{ position: 'relative' }}>
+                    <div className="login_input_block">
                         <input
                             type="text"
                             id="email"
                             placeholder=" "
                             className={`login_input ${errors.emailOrPhone ? 'error' : ''}`}
                             value={emailOrPhone}
-                            onChange={(e) => setEmailOrPhone(e.target.value)}
+                            onChange={e => setEmailOrPhone(e.target.value)}
                             autoComplete="username"
                         />
                         <label htmlFor="email">Адреса електронної пошти або мобільний телефон</label>
                         {errors.emailOrPhone && (
-                            <div className="error_text">
-                                <div className="error_icon"></div>
+                            <div className="login_error_text">
+                                <div className="login_error_icon" />
                                 {errors.emailOrPhone}
                             </div>
                         )}
                     </div>
 
-                    <div className="login_input_group password_input_container" style={{ position: 'relative' }}>
+                    <div className="login_input_block login_password_container">
                         <input
                             ref={passwordInputRef}
                             type={showPassword ? 'text' : 'password'}
@@ -104,61 +147,63 @@ export const Login = ({ isOpen, onClose, onLogin, onForgot }) => {
                             placeholder=" "
                             className={`login_input password_input ${errors.password ? 'error' : ''}`}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={e => setPassword(e.target.value)}
                             onFocus={handleFocus}
                             onBlur={handleBlur}
-                            autoComplete="current_password"
+                            autoComplete="current-password"
                         />
                         <label htmlFor="password">Пароль</label>
-                        {focused && (
+                        {(focused || showPassword) && (
                             <button
                                 ref={toggleButtonRef}
                                 type="button"
-                                className="toggle_password"
-                                onClick={handleToggleClick}
+                                className="login_toggle_password"
+                                onClick={handleShowPassword}
                                 tabIndex={-1}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
-                                aria-label={showPassword ? 'Приховати пароль' : 'Показати пароль'}
                             >
-                                <div className={`eye_icon ${showPassword ? 'eye_closed' : 'eye_open'}`}></div>
+                                <span className={`login_eye_icon ${showPassword ? 'login_eye_closed'  : 'login_eye_open'}`} />
                             </button>
                         )}
+
                         {errors.password && (
-                            <div className="error_text">
-                                <div className="error_icon"></div>
+                            <div className="login_error_text">
+                                <div className="login_error_icon" />
                                 {errors.password}
                             </div>
                         )}
                     </div>
 
-                    <button type="submit" className="login_button">Увійти</button>
-                    <button type="button" className="forgot_link" onClick={onForgot}>Забули пароль?</button>
-                    <div className="login_info_group">
-                        <div className="login_remember">
-                            <label>
-                                <div className={`custom_checkbox ${rememberMe ? 'checked' : ''}`} onClick={() => setRememberMe(!rememberMe)}>
-                                    <div className="checkbox_icon"></div>
-                                </div>
-                                Remember Me
-                            </label>
-                        </div>
-                        <div className="login_register">
-                            New to KYSKFilms?{' '}
-                            <button type="button" className="register_link" onClick={() => alert('Реєстрація буде реалізована пізніше')}>
-                                Створіть свій обліковий запис KYSK.
-                            </button>
-                        </div>
-                        <div className="login_terms">
-                            By continuing, you agree to the KYSK{' '}
-                            <a href="/terms" target="_blank" rel="noopener noreferrer">Conditions of Use.</a> Please see our<br />
-                            <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Notice,</a>{' '}
-                            <a href="/cookies" target="_blank" rel="noopener noreferrer">Cookie Notice</a>{' '}
-                            and{' '}
-                            <a href="/ads" target="_blank" rel="noopener noreferrer">Interest-Based Ads Notice</a>.
-                        </div>
+                    <div className="login_block">
+                        <button type="submit" className={`login_button ${canSubmit ? 'valid' : ''}`}>Увійти</button>
                     </div>
                 </form>
+
+                <div className="login_forgot_block">
+                    <button type="button" className="login_forgot_link" onClick={onForgot}>Забули пароль?</button>
+                </div>
+
+                <div className="login_remember_block">
+                    <div className="login_remember_wrapper">
+                        <div className={`login_custom_checkbox ${rememberMe ? 'login_checked' : ''}`} onClick={() => setRememberMe(!rememberMe)}></div>
+                        <span onClick={() => setRememberMe(!rememberMe)}>Запам'ятай мене</span>
+                    </div>
+                </div>
+
+                <div className="login_register_block">
+                    Вперше на KYSKFilms?{' '}
+                    <button type="button" className="login_register_link" onClick={onRegisterClick}>
+                        Створіть свій обліковий запис KYSK.
+                    </button>
+                </div>
+                <div className="login_terms_block">
+                    Продовжуючи, ви погоджуєтеся з KYSK{' '}
+                    <a href="/terms" target="_blank" rel="noopener noreferrer">Умовами використання</a><br />
+                    Будь ласка, перегляньте наші{' '}
+                    <a href="/privacy" target="_blank" rel="noopener noreferrer">Повідомлення про конфіденційність,</a>{' '}
+                    <a href="/cookies" target="_blank" rel="noopener noreferrer">повідомлення про файли cookie та повідомлення про рекламу на основі інтересів.</a>
+                </div>
             </div>
         </div>
     );

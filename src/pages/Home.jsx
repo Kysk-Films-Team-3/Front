@@ -30,7 +30,7 @@ export const Home = () => {
                 setFilteredContent(loadedAllContent);
             } catch (err) {
                 console.error(err);
-                setError("Ошибка при загрузке данных.");
+                setError("Помилка");
             }
         };
 
@@ -61,14 +61,15 @@ export const Home = () => {
     };
 
     const handleCategoryClick = (categoryName) => {
-        let newActiveCategories;
-        if (activeCategories.includes(categoryName)) {
-            newActiveCategories = activeCategories.filter(name => name !== categoryName);
-        } else {
-            newActiveCategories = [...activeCategories, categoryName];
-        }
-        setActiveCategories(newActiveCategories);
+        setActiveCategories(prev => {
+            if (prev.includes(categoryName)) {
+                return prev.filter(name => name !== categoryName);
+            } else {
+                return [categoryName, ...prev];
+            }
+        });
     };
+
 
     useEffect(() => {
         let intervalId;
@@ -103,6 +104,8 @@ export const Home = () => {
     if (error) {
         return <div>{error}</div>;
     }
+
+
 
     return (
         <div className="home">
@@ -145,23 +148,46 @@ export const Home = () => {
 
             {categories.length > 0 && (
                 <div className="home_categories">
-                    {categories.map((category) => {
-                        const isActive = activeCategories.includes(category.name);
-                        return (
-                            <button
-                                key={category.name}
-                                className={`home_categories_button ${isActive ? 'active' : ''}`}
-                                onClick={() => handleCategoryClick(category.name)}
-                            >
-                                <img
-                                    src={isActive ? category.activeIcon : category.icon}
-                                    className="home_button_icon"
-                                    alt={`Іконка ${category.name}`}
-                                />
-                                <span>{category.name}</span>
-                            </button>
-                        );
-                    })}
+                    {categories
+                        .slice()
+                        .sort((a, b) => {
+                            const aIndex = activeCategories.indexOf(a.name);
+                            const bIndex = activeCategories.indexOf(b.name);
+
+                            if (aIndex !== -1 && bIndex === -1) return -1;
+                            if (aIndex === -1 && bIndex !== -1) return 1;
+                            if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+                            return 0;
+                        })
+                        .map((category) => {
+                            const isActive = activeCategories.includes(category.name);
+                            return (
+                                <button
+                                    key={category.name}
+                                    className={`home_categories_button ${isActive ? 'active' : ''}`}
+                                    onClick={() => {
+                                        if (!isActive) handleCategoryClick(category.name);
+                                    }}
+                                >
+                                    <img
+                                        src={isActive ? category.activeIcon : category.icon}
+                                        className="home_button_icon"
+                                        alt={`Іконка ${category.name}`}
+                                    />
+                                    <span>{category.name}</span>
+
+                                    {isActive && (
+                                        <span
+                                            className="home_category_remove"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCategoryClick(category.name);
+                                            }}
+                                        />
+                                    )}
+                                </button>
+                            );
+                        })}
                 </div>
             )}
 

@@ -16,20 +16,6 @@ export const isValidPassword = (password) => {
     return typeof password === 'string' && password.length >= 4 && password.length <= 60;
 };
 
-export const isValidCardNumber = (cardNumber) => {
-    const cleaned = cardNumber.replace(/\s+/g, '');
-    const cardRegex = /^\d{13,19}$/;
-    return cardRegex.test(cleaned);
-};
-
-export const isValidName = (name) => {
-    return typeof name === 'string' && name.trim().length > 0;
-};
-
-export const isValidLastName = (lastName) => {
-    return typeof lastName === 'string' && lastName.trim().length > 0;
-};
-
 export const isValidVerificationCode = (code, length = 5) => {
     if (Array.isArray(code)) {
         const fullCode = code.join('');
@@ -71,3 +57,4 @@ export const getVerificationCodeError = (code, length = 5) => {
 
     return null;
 };
+

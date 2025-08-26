@@ -1,0 +1,129 @@
+.premium_page {
+    background-color: #262630;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    padding-top: 130px;
+}
+
+.premium_header {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-left: 60px;
+}
+
+.premium_back {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.premium_back_icon {
+    width: 40px;
+    height: 40px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755900281/Back.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.premium_back:hover {
+    color: #4E55D4;
+}
+
+.premium_back:hover .premium_back_icon  {
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755993970/Back_hover.png');
+}
+
+.premium_row {
+    margin-left: 60px;
+    margin-top: 60px;
+    width: 1800px;
+    height: 321px;
+    position: relative;
+}
+
+.premium_row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 31%;
+    width: 1px;
+    height: 397px;
+    background-color: #9999A1;
+}
+
+.premium_title_line {
+    margin-bottom: 20px;
+    white-space: nowrap;
+    gap: 800px;
+    display: flex;
+    font-size: 32px;
+}
+
+.premium_right {
+    border-right: 1px solid #9999A1;
+}
+
+.premium_line {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #9999A1;
+
+}
+.premium_line:last-child {
+    border-bottom: none;
+}
+
+.premium_feature_text {
+    font-size: 24px;
+    color: #ffffff;
+    flex: 1;
+    font-weight: 200;
+
+}
+
+.title_line > .premium_title:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.premium_line_icon {
+    width: 40px;
+    height: 40px;
+    padding-right: 1200px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755899054/Check.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.premium_button_container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    margin-left: 605px;
+}
+
+.premium_button {
+    background: linear-gradient(90deg, #3429B0, #4E55D4);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 200;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.premium_button:hover {
+    background-color: #6a71e0;
+}

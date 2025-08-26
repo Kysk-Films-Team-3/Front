@@ -1,22 +1,29 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Home } from '../pages/Home';
+import { SettingsPage } from '../pages/SettingsPage';
+import { Premium } from '../pages/Premium';
 import { Layout } from '../layout/Layout';
 
-export const AppRoutes = ({ onLoginClick, isLoggedIn, onLogout }) => {
+export const AppRoutes = ({ onLoginClick, onDeviceClick, onPaymentClick, onOpenLogoutModal, isLoggedIn, user }) => {
     return (
         <Routes>
             <Route
-                path="/"
-                element={
-                    <Layout
-                        onLoginClick={onLoginClick}
-                        isLoggedIn={isLoggedIn}
-                        onLogout={onLogout}
-                    />
-                }
+                element={<Layout onLoginClick={onLoginClick} isLoggedIn={isLoggedIn} user={user} />}
             >
-                <Route index element={<Home />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/premium" element={<Premium />} />
+                <Route
+                    path="/settings"
+                    element={
+                        <SettingsPage
+                            onOpenLogoutModal={onOpenLogoutModal}
+                            onPaymentClick={onPaymentClick}
+                            onDeviceClick={onDeviceClick}
+                            user={user}
+                        />
+                    }
+                />
             </Route>
         </Routes>
     );

@@ -1,4 +1,4 @@
-.login_overlay {
+.registration_overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
@@ -8,14 +8,14 @@
     z-index: 9999;
 }
 
-.login_modal {
+.registration_modal {
     background-color: #262630;
-    padding: 30px 15px 45px 15px;
+    padding: 30px 15px 48px 15px;
     border-radius: 20px;
     font-family: "Raleway", sans-serif;
     width: 850px;
-    height: 536px;
-    color: #fff;
+    height: 467px;
+    color: #F8F8FE;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -26,11 +26,11 @@
     transition: height 0.3s ease;
 }
 
-.login_modal.has-errors {
-    height: 580px;
+.registration_modal.has-error {
+    height: 514px;
 }
 
-.login_close_icon {
+.registration_close_icon {
     top: 15px;
     right: 15px;
     width: 30px;
@@ -44,11 +44,11 @@
     background-position: center;
 }
 
-.login_close_icon:hover {
+.registration_close_icon:hover {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal_dark_hover.png');
 }
 
-.login_title {
+.registration_title {
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
@@ -56,7 +56,17 @@
     font-size: 32px;
 }
 
-.login_form {
+.registration_subtitle {
+    margin-top: 20px;
+    color: #9999A1;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+    font-weight: 400;
+
+}
+
+.registration_form {
     margin-top: 20px;
     width: 480px;
     display: flex;
@@ -64,14 +74,14 @@
     align-items: flex-start;
 }
 
-.login_input_block {
+.registration_input_block {
     display: flex;
     flex-direction: column;
     width: 100%;
     position: relative;
 }
 
-.login_input {
+.registration_input {
     background: #34353F;
     border: 1px solid #838387;
     border-radius: 15px;
@@ -89,56 +99,40 @@
     transition: border-color 0.3s ease, height 0.3s ease;
 }
 
-.login_input::placeholder {
+.registration_input::placeholder {
     color: transparent;
 }
 
-.login_input:focus,
-.login_input:not(:placeholder-shown) {
+.registration_input:focus,
+.registration_input:not(:placeholder-shown) {
     height: 69px;
     border-color: #F8F8FE;
     padding-top: 28px;
 }
 
-.login_input_block label {
+.registration_input_block label {
     position: absolute;
     left: 15px;
     top: 18px;
     font-size: 16px;
-    font-weight: 400;
     color: #838387;
     pointer-events: none;
     transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
     z-index: 1;
 }
 
-.login_input:focus ~ label,
-.login_input:not(:placeholder-shown) ~ label {
+.registration_input:focus ~ label,
+.registration_input:not(:placeholder-shown) ~ label {
     top: 15px;
     font-size: 12px;
     color: #9999A1;
 }
 
-.login_input_block.active label {
-    top: 6px;
-    font-size: 12px;
-}
-
-.login_password_container {
-    margin-top: 10px;
-    position: relative;
-    width: 100%;
-}
-
-.login_input.password_input {
-    padding-right: 50px;
-}
-
-.login_input.error {
+.registration_input.error {
     border-color: #DD5254;
 }
 
-.login_error_text {
+.registration_error_text {
     margin-top: 10px;
     font-family: "Inter", sans-serif;
     align-items: center;
@@ -147,68 +141,30 @@
     gap: 4px;
     font-weight: 300;
     font-size: 14px;
-
 }
 
-.login_error_icon {
+.registration_error_icon {
     width: 18px;
     height: 18px;
     display: inline-block;
-    flex-shrink: 0;
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872027/Warning.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
 
-.login_toggle_password {
-    position: absolute;
-    right: 12px;
-    top: 30px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    user-select: none;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login_eye_icon {
-    width: 22px;
-    height: 22px;
-}
-
-.login_eye_icon.login_eye_open {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872030/Eye_open.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.login_eye_icon.login_eye_closed {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872032/Eye_close.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.login_block {
+.registration_block {
     margin-top: 15px;
 }
 
-.login_button {
-    color: #fff;
+.registration_button {
+    color: #F8F8FE;
     font-size: 16px;
     border: none;
     border-radius: 15px;
-    cursor: pointer;
     transition: background 0.3s ease;
     width: 480px;
     height: 52px;
+    cursor: pointer;
     font-family: inherit;
     letter-spacing: inherit;
     font-optical-sizing: auto;
@@ -218,61 +174,32 @@
     background: rgba(78, 85, 212, 0.5);
 }
 
-.login_button.valid {
+.registration_button.valid {
     background: #4E55D4;
-    cursor: pointer;
 }
 
-.login_button.valid:hover {
+.registration_button.valid:hover {
     background: #3429B0;
 }
 
-.login_forgot_link {
-    background: none;
-    border: none;
-    color: #F8F8FE;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 400;
-    font-family: inherit;
-    text-align: center;
-    display: block;
-    width: 100%;
-    transition: color 0.3s ease;
-}
-
-.login_forgot_link:hover {
-    color: #9999A1;
-}
-
-.login_forgot_block {
-    margin-top: 10px;
-}
-
-.login_remember_block {
+.registration_remember {
     margin-top: 20px;
     display: flex;
     align-items: center;
     font-size: 16px;
-    color: #fff;
+    color: #F8F8FE;
     font-weight: 400;
     width: 480px;
 }
 
-.login_remember_wrapper {
+.registration_remember label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
 }
 
-
-.login_remember_wrapper span {
-    cursor: pointer;
-    user-select: none;
-}
-
-.login_custom_checkbox {
+.registration_custom_checkbox {
     position: relative;
     width: 16px;
     height: 16px;
@@ -283,52 +210,25 @@
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871769/Checkbox.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
-    transition: background-image 0.2s ease;
 }
 
-.login_custom_checkbox:hover {
+.registration_custom_checkbox:hover {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871771/Checkbox_hover.png');
 }
 
-.login_custom_checkbox.login_checked {
+.registration_custom_checkbox.checked {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active.png');
 }
 
-.login_custom_checkbox.login_checked:hover {
+.registration_custom_checkbox.checked:hover {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active_hover.png');
 }
 
-.login_checkbox_icon {
+.registration_checkbox_icon {
     display: none;
 }
 
-.login_checkbox_input {
-    display: none;
-}
-
-.login_register_block {
-    margin-top: 20px;
-    display: flex;
-    font-size: 16px;
-    color: #aaa;
-    width: 480px;
-}
-
-.login_register_link {
-    background: none;
-    border: none;
-    color: #F8F8FE;
-    cursor: pointer;
-    font-weight: 400;
-    font-size: 16px;
-}
-
-.login_register_link:hover {
-    text-decoration: underline;
-}
-
-.login_terms_block {
+.registration_terms {
     margin-top: 20px;
     font-size: 14px;
     font-weight: 400;
@@ -338,12 +238,17 @@
     line-height: 1.4;
 }
 
-.login_terms_block a {
+.registration_terms a {
     color: #4E55D4;
     text-decoration: underline;
 }
 
-.login_terms_block a:hover {
+.registration_terms a:hover {
     color: #3429B0;
 }
 
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #34353F inset !important;
+    -webkit-text-fill-color: #F8F8FE !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
