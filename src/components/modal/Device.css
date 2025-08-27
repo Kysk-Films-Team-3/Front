@@ -16,6 +16,7 @@
     border-radius: 15px;
     width: 1098px;
     height: 406px;
+    cursor: default;
     padding: 60px;
     color: #F8F8FE;
     box-sizing: border-box;
@@ -27,22 +28,22 @@
 }
 
 .device_back_button {
-    font-weight: 600;
+    font-weight: 400;
+    font-style: normal;
     display: flex;
     align-items: center;
     gap: 10px;
     background: none;
     border: none;
-    color: #fff;
+    color: #F8F8FE;
     font-size: 24px;
-    font-family: "Raleway", sans-serif;
     cursor: pointer;
 }
 
 .device_back_arrow {
     width: 24px;
     height: 24px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755900281/Back.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254344/Back.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -52,7 +53,7 @@
 }
 
 .device_back_button:hover .device_back_arrow  {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755993970/Back_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254358/Back_hover.png');
 }
 
 .device_title {
@@ -121,7 +122,7 @@
 .device_plus_icon  {
     width: 24px;
     height: 24px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755993841/plus.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254685/Plus.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

@@ -44,12 +44,31 @@ const mockContent = [
     { id: 'nature', category: 'Природа' },
 ];
 
+const mockFilms = [
+    { id: 1, title: 'The Brothers Sun', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265240/Thebrotherssun.png' },
+    { id: 2, title: 'Spider-Man', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265250/Spiderman.png' },
+    { id: 3, title: 'Scooby-Doo', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265233/Scoobydoo.png' },
+    { id: 4, title: 'Suits', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265246/Suit.png' },
+    { id: 5, title: 'Monk', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265236/Monk.png' },
+    { id: 6, title: 'Dragon 2', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265243/Dragon2.png' },
+];
+
+const mockActors = [
+    { id: 123, name: 'Джейсон Стетхем', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265326/Statham.png' },
+    { id: 124, name: 'Леонардо Ді Капріо', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265327/DiCaprio.png' },
+    { id: 125, name: 'Марго Роббі', role: 'Актриса', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265327/Robbie.png' },
+    { id: 126, name: 'Роберт Паттінсон', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756265327/Pattinson.png' },
+];
+
+
 export const fakeSlides = async () => [...mockSlides];
 export const fakeCategories = async () => [...mockCategories];
 export const fakeContent = async (categoryNames) => {
     if (!categoryNames || categoryNames.length === 0) return [...mockContent];
     return mockContent.filter(item => categoryNames.includes(item.category));
 };
+export const getPopularFilms = async () => [...mockFilms];
+export const getPopularActors = async () => [...mockActors];
 
 const loadUsers = () => {
     try { return JSON.parse(localStorage.getItem('mockUsers') || '[]'); }
@@ -157,6 +176,5 @@ export const setPasswordAPI = async (emailOrPhone, password) => {
 
     return { success: true, user: userData, token };
 };
-
 
 export const setForgotPasswordAPI = setPasswordAPI;

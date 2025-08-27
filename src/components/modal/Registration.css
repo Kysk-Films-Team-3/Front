@@ -37,7 +37,7 @@
     height: 30px;
     cursor: pointer;
     position: absolute;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756244998/Close.png');
     background-size: contain;
     transition: color 0.3s ease;
     background-repeat: no-repeat;
@@ -45,7 +45,7 @@
 }
 
 .registration_close_icon:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal_dark_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756245190/Close_light_hover.png');
 }
 
 .registration_title {
@@ -87,28 +87,39 @@
     border-radius: 15px;
     color: #F8F8FE;
     font-family: "Inter", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 200;
-    font-style: normal;
     font-size: 16px;
+    font-weight: 200;
     outline: none;
     width: 100%;
     box-sizing: border-box;
     height: 52px;
     padding: 15px;
-    transition: border-color 0.3s ease, height 0.3s ease;
+    transition: border-color 0.3s ease, height 0.3s ease, padding-top 0.3s ease;
 }
 
 .registration_input::placeholder {
     color: transparent;
 }
 
-.registration_input:focus,
-.registration_input:not(:placeholder-shown) {
-    height: 69px;
+.registration_input:focus {
     border-color: #F8F8FE;
+    height: 69px;
     padding-top: 28px;
 }
+
+.registration_input:not(:placeholder-shown):not(:focus) {
+    height: 69px;
+    padding-top: 28px;
+    border-color: #838387;
+}
+
+.registration_input:focus ~ label,
+.registration_input:not(:placeholder-shown) ~ label {
+    top: 15px;
+    font-size: 12px;
+    color: #9999A1;
+}
+
 
 .registration_input_block label {
     position: absolute;
@@ -129,7 +140,12 @@
 }
 
 .registration_input.error {
-    border-color: #DD5254;
+    border-color: #DD5254 !important;
+}
+
+.registration_input.error:focus,
+.registration_input.error:not(:placeholder-shown) {
+    border-color: #DD5254 !important;
 }
 
 .registration_error_text {
@@ -147,7 +163,7 @@
     width: 18px;
     height: 18px;
     display: inline-block;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872027/Warning.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756247044/Warning.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -207,21 +223,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871769/Checkbox.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246258/Checkbox.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
 
 .registration_custom_checkbox:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871771/Checkbox_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246334/Checkbox_hover.png');
 }
 
 .registration_custom_checkbox.checked {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246397/Checkbox_active.png');
 }
 
 .registration_custom_checkbox.checked:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246407/Checkbox_active_hover.png');
 }
 
 .registration_checkbox_icon {

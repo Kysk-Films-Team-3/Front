@@ -7,13 +7,13 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
-    const modalRef = useRef(null);
+    const newRef = useRef(null);
 
     useEffect(() => {
         if (!isOpen) return;
 
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) onClose();
+            if (newRef.current && !newRef.current.contains(event.target)) onClose();
         };
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -58,7 +58,7 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
 
     return (
         <div className="new_overlay">
-            <div className={`new_modal ${submitted && error ? 'new_has-errors' : ''}`} ref={modalRef}>
+            <div className={`new_modal ${submitted && error ? 'new_has-errors' : ''}`} ref={newRef}>
                 <div className="new_close_icon" onClick={onClose}></div>
                 <div className="new_title">Створіть новий пароль</div>
                 <div className="new_subtitle">

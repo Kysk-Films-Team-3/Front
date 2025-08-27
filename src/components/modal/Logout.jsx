@@ -1,19 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 import './Logout.css';
 
-export const Logout = ({ onClose, onUserLogout }) => {
+export const Logout = ({ onClose }) => {
+    const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const logoutRef = useRef(null);
 
     const handleLogout = async () => {
-        const result = await logoutUser();
-        if (result.success) {
-            onUserLogout();
-            onClose();
-            navigate('/');
-        }
+        await logout();
+        onClose();
+        navigate('/');
     };
 
     useEffect(() => {
@@ -27,11 +25,8 @@ export const Logout = ({ onClose, onUserLogout }) => {
                 onClose();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [onClose]);
 
     return (

@@ -1,22 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import './Header.css';
-
-const popularFilms = [
-    { id: 1, title: 'The Brothers Sun', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142247/Thebrothersunfilm.png' },
-    { id: 2, title: 'Spider-Man', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142256/Spidermanfilm.png' },
-    { id: 3, title: 'Scooby-Doo', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142262/Scobydoofilm.png' },
-    { id: 4, title: 'Suits', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142091/Suitsfilm.png' },
-    { id: 5, title: 'Monk', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142234/Monkfilm.png' },
-    { id: 6, title: 'Dragon 2', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754142240/Dragon2film.png' },
-];
-
-const popularActors = [
-    { id: 123, name: 'Джейсон Стетхем', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159030/Stathamactor.png' },
-    { id: 124, name: 'Леонардо Ді Капріо', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159112/DiCaprioactor.png' },
-    { id: 125, name: 'Марго Роббі', role: 'Актриса', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159069/Robbieactor.png' },
-    { id: 126, name: 'Роберт Паттінсон', role: 'Актор', image: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1754159100/Pattinsonactor.png' },
-];
+import { getPopularFilms, getPopularActors } from '../../services/api';
 
 export const Header = ({ onLoginClick, user }) => {
     const location = useLocation();
@@ -29,7 +14,23 @@ export const Header = ({ onLoginClick, user }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState({ films: [], actors: [] });
 
+    const [popularFilms, setPopularFilms] = useState([]);
+    const [popularActors, setPopularActors] = useState([]);
+
     const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const films = await getPopularFilms();
+                const actors = await getPopularActors();
+                setPopularFilms(films);
+                setPopularActors(actors);
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+    }, []);
 
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
     const handleMenuItemClick = () => setIsDropdownOpen(false);
@@ -194,7 +195,7 @@ export const Header = ({ onLoginClick, user }) => {
                                                 )}
                                             </div>
                                             {searchResults.films.length === 0 && searchResults.actors.length === 0 && (
-                                                <p className="no-results-text">Результатів не знайдено</p>
+                                                <p className="no_results_text">Результатів не знайдено</p>
                                             )}
                                         </div>
                                     )}
@@ -221,9 +222,7 @@ export const Header = ({ onLoginClick, user }) => {
                     )}
 
                     {!isPremiumPage && (
-                        <div className="header_premium">
-                            <Link to="/Premium"><button>Оформити преміум</button></Link>
-                        </div>
+                        <Link to="/Premium" className="header_premium"> Оформити преміум </Link>
                     )}
 
                     <div className="header_promo">
@@ -240,32 +239,34 @@ export const Header = ({ onLoginClick, user }) => {
 
                             {isDropdownOpen && (
                                 <div className="header_dropdown" ref={dropdownRef}>
-                                    <div className="profile-info-block">
-                                        <div className="profil-block">
+                                    <div className="profile_info_block">
+                                        <div className="profile_block">
                                             <div className="header_avatar" />
-                                            <div className="profile-text-block">
-                                                <div className="profile-name">{user?.name && user.name}</div>
+                                            <div className="profile_text_block">
+                                                <div className="profile_name">
+                                                    {user?.emailOrPhone ? user.emailOrPhone.split('@')[0] : ''}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="check-icon"></div>
+                                        <div className="check_icon"></div>
                                     </div>
                                     <hr className="divider" />
                                     <ul>
                                         <li>
-                                            <Link to="/profile" onClick={handleMenuItemClick} className="dropdown-link">
-                                                <div className="dropdown-icon manage-icon"></div>
+                                            <Link to="/profile" onClick={handleMenuItemClick} className="dropdown_link">
+                                                <div className="dropdown_icon manage_icon"></div>
                                                 Керувати профілем
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link to="/settings" onClick={handleMenuItemClick} className="dropdown-link">
-                                                <div className="dropdown-icon settings-icon"></div>
+                                            <Link to="/settings" onClick={handleMenuItemClick} className="dropdown_link">
+                                                <div className="dropdown_icon settings_icon"></div>
                                                 Перейти до налаштувань
                                             </Link>
                                         </li>
                                         <li>
-                                            <button className="dropdown-link language-switch" onClick={handleMenuItemClick}>
-                                                <div className="dropdown-icon language-icon"></div>
+                                            <button className="dropdown_link language_switch" onClick={handleMenuItemClick}>
+                                                <div className="dropdown_icon language_icon"></div>
                                                 English
                                             </button>
                                         </li>
@@ -275,7 +276,7 @@ export const Header = ({ onLoginClick, user }) => {
                         </div>
                     ) : (
                         <div onClick={onLoginClick} className="header_log_button">
-                            <div className="log-button-icon"></div>
+                            <div className="log_button_icon"></div>
                             <span>Увійти</span>
                         </div>
                     )}

@@ -22,6 +22,8 @@
     border-radius: 15px;
     width: 1025px;
     height: 541px;
+    font-family: "Raleway", sans-serif;
+    cursor: default;
     padding: 60px;
     color: #F8F8FE;
     box-sizing: border-box;
@@ -47,7 +49,7 @@
 .payment_back_arrow {
     width: 24px;
     height: 24px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755900281/Back.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254344/Back.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -55,7 +57,7 @@
     color: #4E55D4;
 }
 .payment_back_button:hover .payment_back_arrow  {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755993970/Back_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254358/Back_hover.png');
 }
 
 .payment_title {
@@ -85,7 +87,6 @@
 }
 
 .payment_block_title{
-    font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
@@ -131,7 +132,7 @@
 .payment_copy_button {
     width: 24px;
     height: 24px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755997920/Copy.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254503/Copy.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-color: transparent;
@@ -139,7 +140,7 @@
     cursor: pointer;
 }
 .payment_copy_button:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755997920/Copy_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254503/Copy_hover.png');
 }
 .payment_divider {
     gap: 10px;
@@ -181,7 +182,7 @@
     width: 24px;
     height: 24px;
     margin-left:10px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755993841/plus.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254685/Plus.png');
     background-size: contain;
     background-repeat: no-repeat;
 }

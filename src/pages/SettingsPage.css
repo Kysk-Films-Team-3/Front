@@ -487,13 +487,6 @@
     font-weight: 500;
 }
 
-.settings_divider {
-    margin-top: 60px;
-    width: 100%;
-    border: none;
-    border-top: 1px solid #9999A1;
-}
-
 @media (min-width: 2560px) {
 
     .settings_container {

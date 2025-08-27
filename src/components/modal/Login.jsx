@@ -1,15 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import './Login.css';
 import { isValidEmailOrPhone, isValidPassword } from '../../validation/validation';
-import { loginUserAPI, saveRememberMe, getRememberedUser } from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 
-export const Login = ({ isOpen, onClose, onForgot, onRegisterClick, onLoginSuccess }) => {
+export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
+    const { login, userEmail: rememberedEmail } = useContext(AuthContext);
+
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [focused, setFocused] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [errors, setErrors] = useState({ emailOrPhone: '', password: '' });
+
     const passwordInputRef = useRef(null);
     const toggleButtonRef = useRef(null);
     const loginRef = useRef(null);
@@ -18,22 +21,18 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick, onLoginSucce
         if (!isOpen) return;
 
         const mockUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]');
-
         if (mockUsers.length > 0) {
             const usersText = mockUsers
                 .map((u, i) => `${i + 1}. Email: ${u.emailOrPhone}, Password: ${u.password}`)
                 .join('\n\n');
-
-            console.log('mockUsers при открытии:', mockUsers);
             alert(`mockUsers:\n\n${usersText}`);
         }
 
-        const rememberedUser = getRememberedUser();
-        setEmailOrPhone(rememberedUser || '');
-        setRememberMe(!!rememberedUser);
+        setEmailOrPhone(rememberedEmail || '');
         setPassword('');
+        setRememberMe(!!rememberedEmail);
         setErrors({ emailOrPhone: '', password: '' });
-    }, [isOpen]);
+    }, [isOpen, rememberedEmail]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -81,30 +80,24 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick, onLoginSucce
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const fieldsValid = validateFields();
-        if (!fieldsValid) return;
+        if (!validateFields()) return;
 
         try {
-            const response = await loginUserAPI(emailOrPhone, password);
+            const response = await login(emailOrPhone, password, rememberMe);
 
-            if (response.success) {
-                saveRememberMe(emailOrPhone, rememberMe);
-                localStorage.setItem('user', JSON.stringify(response.user));
-
-                onLoginSuccess(response.user);
-            } else {
+            if (!response.success) {
                 const apiErrors = { emailOrPhone: '', password: '' };
                 const msg = response.message?.toLowerCase() || '';
 
                 if (msg.includes('не знайдений') || msg.includes('not found')) {
                     apiErrors.emailOrPhone = response.message;
-                } else if (msg.includes('пароль') || msg.includes('password')) {
-                    apiErrors.password = response.message;
                 } else {
                     apiErrors.password = response.message;
                 }
 
                 setErrors(apiErrors);
+            } else {
+                onClose();
             }
         } catch {
             setErrors({ emailOrPhone: '', password: 'Помилка при спробі увійти' });
@@ -197,6 +190,7 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick, onLoginSucce
                         Створіть свій обліковий запис KYSK.
                     </button>
                 </div>
+
                 <div className="login_terms_block">
                     Продовжуючи, ви погоджуєтеся з KYSK{' '}
                     <a href="/terms" target="_blank" rel="noopener noreferrer">Умовами використання</a><br />

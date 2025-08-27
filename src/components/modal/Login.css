@@ -37,7 +37,7 @@
     height: 30px;
     cursor: pointer;
     position: absolute;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756244998/Close.png');
     background-size: contain;
     transition: color 0.3s ease;
     background-repeat: no-repeat;
@@ -45,7 +45,7 @@
 }
 
 .login_close_icon:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal_dark_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756245190/Close_light_hover.png');
 }
 
 .login_title {
@@ -77,27 +77,37 @@
     border-radius: 15px;
     color: #F8F8FE;
     font-family: "Inter", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 200;
-    font-style: normal;
     font-size: 16px;
     outline: none;
     width: 100%;
     box-sizing: border-box;
     height: 52px;
     padding: 15px;
-    transition: border-color 0.3s ease, height 0.3s ease;
+    transition: border-color 0.3s ease, height 0.3s ease, padding-top 0.3s ease;
 }
 
 .login_input::placeholder {
     color: transparent;
 }
 
-.login_input:focus,
-.login_input:not(:placeholder-shown) {
-    height: 69px;
+.login_input:focus {
     border-color: #F8F8FE;
+    height: 69px;
     padding-top: 28px;
+}
+
+.login_input:not(:placeholder-shown):not(:focus) {
+    height: 69px;
+    padding-top: 28px;
+    border-color: #838387;
+}
+
+.login_input:focus ~ label,
+.login_input:not(:placeholder-shown) ~ label {
+    top: 15px;
+    font-size: 12px;
+    color: #9999A1;
 }
 
 .login_input_block label {
@@ -135,7 +145,12 @@
 }
 
 .login_input.error {
-    border-color: #DD5254;
+    border-color: #DD5254 !important;
+}
+
+.login_input.error:focus,
+.login_input.error:not(:placeholder-shown) {
+    border-color: #DD5254 !important;
 }
 
 .login_error_text {
@@ -155,7 +170,7 @@
     height: 18px;
     display: inline-block;
     flex-shrink: 0;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872027/Warning.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756247044/Warning.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -183,14 +198,14 @@
 }
 
 .login_eye_icon.login_eye_open {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872030/Eye_open.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756247246/Eye_open.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .login_eye_icon.login_eye_closed {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755872032/Eye_close.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756247242/Eye_close.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -280,7 +295,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871769/Checkbox.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246258/Checkbox.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -288,15 +303,15 @@
 }
 
 .login_custom_checkbox:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871771/Checkbox_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246334/Checkbox_hover.png');
 }
 
 .login_custom_checkbox.login_checked {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246397/Checkbox_active.png');
 }
 
 .login_custom_checkbox.login_checked:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755871770/Checkbox_active_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756246407/Checkbox_active_hover.png');
 }
 
 .login_checkbox_icon {

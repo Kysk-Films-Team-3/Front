@@ -1,14 +1,25 @@
-.footer {
+.footer{
     background: #262630;
     font-family: "Raleway", sans-serif;
     color: #F8F8FE;
     font-weight: 200;
-    padding: 60px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 60px;
     width: 100%;
+    height: 100%;
+}
+
+.footer_container {
+    padding: 60px;
+}
+
+.footer_divider{
+    margin-top: 60px;
+    width: 100%;
+    border: none;
+    border-top: 1px solid #34353F;
 }
 
 .footer_top {
@@ -23,8 +34,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 30px;
-    margin-top: 30px;
     min-width: 216px;
     flex-shrink: 0;
 }

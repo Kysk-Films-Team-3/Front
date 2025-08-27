@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes/AppRoutes';
 import { Login } from './components/modal/Login';
@@ -13,30 +13,29 @@ import { SendCode } from './components/modal/SendCode';
 import { Device } from './components/modal/Device';
 import { Payment } from './components/modal/Payment';
 import { Logout } from './components/modal/Logout';
-import { getAuthUser, logoutUser } from './services/api';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 
 export const App = () => {
     const [activeModal, setActiveModal] = useState(null);
     const [userEmail, setUserEmail] = useState('');
-    const [user, setUser] = useState(getAuthUser());
 
     const closeModal = () => setActiveModal(null);
 
-    const handleLoginSuccess = (userData) => {
-        setUser(userData);
-        closeModal();
-    };
+    return (
+        <AuthProvider>
+            <AppWithContext
+                activeModal={activeModal}
+                setActiveModal={setActiveModal}
+                closeModal={closeModal}
+                userEmail={userEmail}
+                setUserEmail={setUserEmail}
+            />
+        </AuthProvider>
+    );
+};
 
-    const handleLogoutConfirm = async () => {
-        await logoutUser();
-        setUser(null);
-        closeModal();
-    };
-
-    const handleRegistrationSuccess = (email) => {
-        setUserEmail(email);
-        setActiveModal('SendCode');
-    };
+const AppWithContext = ({ activeModal, setActiveModal, closeModal, userEmail, setUserEmail }) => {
+    const { user, logout } = useContext(AuthContext);
 
     return (
         <BrowserRouter>
@@ -55,7 +54,6 @@ export const App = () => {
                     onClose={closeModal}
                     onRegisterClick={() => setActiveModal('Registration')}
                     onForgot={() => setActiveModal('Forgot')}
-                    onLoginSuccess={handleLoginSuccess}
                 />
             )}
 
@@ -84,12 +82,8 @@ export const App = () => {
                     isOpen
                     onClose={closeModal}
                     emailOrPhone={userEmail}
-                    onPasswordCreated={(userData) => {
-                        setUser(userData);
-                        setActiveModal('ForgotComplete');
-                    }}
+                    onPasswordCreated={() => setActiveModal('ForgotComplete')}
                 />
-
             )}
 
             {activeModal === 'ForgotComplete' && (
@@ -104,7 +98,10 @@ export const App = () => {
                 <Registration
                     isOpen
                     onClose={closeModal}
-                    onRegisterSuccess={handleRegistrationSuccess}
+                    onRegisterSuccess={(email) => {
+                        setUserEmail(email);
+                        setActiveModal('SendCode');
+                    }}
                 />
             )}
 
@@ -122,10 +119,7 @@ export const App = () => {
                     isOpen
                     onClose={closeModal}
                     email={userEmail}
-                    onPasswordCreated={(userData) => {
-                        setUser(userData);
-                        setActiveModal('RegistrationComplete');
-                    }}
+                    onPasswordCreated={() => setActiveModal('RegistrationComplete')}
                 />
             )}
 
@@ -143,7 +137,7 @@ export const App = () => {
                 <Logout
                     isOpen
                     onClose={closeModal}
-                    onUserLogout={handleLogoutConfirm}
+                    onUserLogout={logout}
                 />
             )}
         </BrowserRouter>

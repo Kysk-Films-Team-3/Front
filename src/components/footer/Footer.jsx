@@ -5,6 +5,9 @@ import {Link} from "react-router-dom";
 export const Footer = () => {
     return (
         <footer className="footer">
+            <div className="footer_block">
+                <div className="footer_divider"></div>
+                <div className="footer_container">
             <div className="footer_top">
                 <div className="footer_left">
                     <div className="footer_icons">
@@ -77,6 +80,8 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
             </div>
         </footer>
     );
