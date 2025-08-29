@@ -10,10 +10,15 @@ export const Home = () => {
     const carouselWrapperRef = useRef(null);
     const [activeCategories, setActiveCategories] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [originalCategories, setOriginalCategories] = useState([]);
     const [filteredContent, setFilteredContent] = useState([]);
     const [allContent, setAllContent] = useState([]);
     const [slides, setSlides] = useState([]);
     const [error, setError] = useState(null);
+    const categoriesRef = useRef(null);
+    const isDown = useRef(false);
+    const startX = useRef(0);
+    const scrollLeft = useRef(0);
 
     useEffect(() => {
         const loadInitialData = async () => {
@@ -23,9 +28,11 @@ export const Home = () => {
 
                 setSlides(loadedSlides);
                 setCategories(loadedCategories);
+                setOriginalCategories(loadedCategories);
 
                 const allCategoryNames = loadedCategories.map(cat => cat.name);
                 const loadedAllContent = await fakeContent(allCategoryNames);
+
                 setAllContent(loadedAllContent);
                 setFilteredContent(loadedAllContent);
             } catch (err) {
@@ -41,23 +48,17 @@ export const Home = () => {
         if (activeCategories.length === 0) {
             setFilteredContent(allContent);
         } else {
-            const newFilteredContent = allContent.filter(item =>
-                activeCategories.includes(item.category)
+            setFilteredContent(
+                allContent.filter(item => activeCategories.includes(item.category))
             );
-            setFilteredContent(newFilteredContent);
         }
     }, [activeCategories, allContent]);
 
     const nextSlide = () => {
-        if (slides.length > 0) {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }
+        if (slides.length > 0) setCurrentSlide(prev => (prev + 1) % slides.length);
     };
-
     const prevSlide = () => {
-        if (slides.length > 0) {
-            setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-        }
+        if (slides.length > 0) setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length);
     };
 
     const handleCategoryClick = (categoryName) => {
@@ -65,18 +66,35 @@ export const Home = () => {
             if (prev.includes(categoryName)) {
                 return prev.filter(name => name !== categoryName);
             } else {
+                setTimeout(() => {
+                    if (categoriesRef.current) {
+                        categoriesRef.current.scrollTo({ left: 0, behavior: 'auto' });
+                    }
+                }, 10);
                 return [categoryName, ...prev];
             }
         });
     };
 
+    const handleMouseDown = (e) => {
+        isDown.current = true;
+        startX.current = e.pageX - categoriesRef.current.offsetLeft;
+        scrollLeft.current = categoriesRef.current.scrollLeft;
+    };
+    const handleMouseLeave = () => { isDown.current = false; };
+    const handleMouseUp = () => { isDown.current = false; };
+    const handleMouseMove = (e) => {
+        if (!isDown.current) return;
+        e.preventDefault();
+        const x = e.pageX - categoriesRef.current.offsetLeft;
+        const walk = (x - startX.current) * 10;
+        categoriesRef.current.scrollLeft = scrollLeft.current - walk;
+    };
 
     useEffect(() => {
         let intervalId;
         if (!isHovered && slides.length > 0) {
-            intervalId = setInterval(() => {
-                setCurrentSlide((prev) => (prev + 1) % slides.length);
-            }, 5000);
+            intervalId = setInterval(() => setCurrentSlide(prev => (prev + 1) % slides.length), 5000);
         }
         return () => clearInterval(intervalId);
     }, [isHovered, slides.length]);
@@ -85,7 +103,6 @@ export const Home = () => {
         const updatePosition = () => {
             const track = carouselTrackRef.current;
             const wrapper = carouselWrapperRef.current;
-
             if (track && wrapper && slides.length > 0) {
                 const slideWidth = 900;
                 const gap = 20;
@@ -95,17 +112,12 @@ export const Home = () => {
                 track.style.transform = `translateX(${centerOffset - slideOffset}px)`;
             }
         };
-
         updatePosition();
         const timeoutId = setTimeout(updatePosition, 50);
         return () => clearTimeout(timeoutId);
     }, [currentSlide, slides.length]);
 
-    if (error) {
-        return <div>{error}</div>;
-    }
-
-
+    if (error) return <div>{error}</div>;
 
     return (
         <div className="home">
@@ -120,8 +132,8 @@ export const Home = () => {
                             <div className="home_carousel_track" ref={carouselTrackRef}>
                                 {slides.map((slide, index) => (
                                     <Link
-                                        to={slide.link}
                                         key={slide.id}
+                                        to={slide.link}
                                         className={`home_carousel_slide ${index === currentSlide ? 'active' : ''}`}
                                     >
                                         <div className={`home_slide_background ${slide.className}`} />
@@ -131,14 +143,8 @@ export const Home = () => {
 
                             {slides.length > 0 && (
                                 <>
-                                    <button
-                                        onClick={prevSlide}
-                                        className={`home_nav_button prev ${isHovered ? 'show' : ''}`}
-                                    />
-                                    <button
-                                        onClick={nextSlide}
-                                        className={`home_nav_button next ${isHovered ? 'show' : ''}`}
-                                    />
+                                    <button onClick={prevSlide} className={`home_nav_button prev ${isHovered ? 'show' : ''}`} />
+                                    <button onClick={nextSlide} className={`home_nav_button next ${isHovered ? 'show' : ''}`} />
                                 </>
                             )}
                         </div>
@@ -147,35 +153,39 @@ export const Home = () => {
             </div>
 
             {categories.length > 0 && (
-                <div className="home_categories">
+                <div
+                    className="home_categories"
+                    ref={categoriesRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
+                >
                     {categories
                         .slice()
                         .sort((a, b) => {
                             const aIndex = activeCategories.indexOf(a.name);
                             const bIndex = activeCategories.indexOf(b.name);
-
                             if (aIndex !== -1 && bIndex === -1) return -1;
                             if (aIndex === -1 && bIndex !== -1) return 1;
                             if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-                            return 0;
+                            return originalCategories.findIndex(c => c.name === a.name) - originalCategories.findIndex(c => c.name === b.name);
                         })
-                        .map((category) => {
+                        .map(category => {
                             const isActive = activeCategories.includes(category.name);
                             return (
                                 <button
                                     key={category.name}
                                     className={`home_categories_button ${isActive ? 'active' : ''}`}
-                                    onClick={() => {
-                                        if (!isActive) handleCategoryClick(category.name);
-                                    }}
+                                    onClick={() => handleCategoryClick(category.name)}
                                 >
                                     <img
                                         src={isActive ? category.activeIcon : category.icon}
                                         className="home_button_icon"
                                         alt={`Іконка ${category.name}`}
+                                        onDragStart={e => e.preventDefault()}
                                     />
                                     <span>{category.name}</span>
-
                                     {isActive && (
                                         <span
                                             className="home_category_remove"

@@ -1,12 +1,12 @@
 .home {
     background: #262630;
     width: 100%;
-    color: #fff;
+    color: #F8F8FE;
     display: flex;
     font-family: "Raleway", sans-serif;
     padding-top: 80px;
     flex-direction: column;
-    overflow-x: hidden;
+
 }
 
 .home_carousel_container {
@@ -66,19 +66,19 @@
 }
 
 .home_slide1 {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889299/Superman.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346218/Superman.png');
 }
 
 .home_slide2 {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889300/Fantastikfour.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346225/Four.png');
 }
 
 .home_slide3 {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889425/Calmar.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346216/Calmar.png');
 }
 
 .home_slide4 {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889304/Wednesday.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346220/Wensday.png');
 }
 
 .home_slide_background::before {
@@ -96,22 +96,22 @@
 
 .home_carousel_slide:hover .home_slide_background.home_slide1::before {
     opacity: 1;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889301/Supermanhover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346217/Superman_hover.png');
 }
 
 .home_carousel_slide:hover .home_slide_background.home_slide2::before {
     opacity: 1;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889428/Fantastikfour_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346223/Four_hover.png');
 }
 
 .home_carousel_slide:hover .home_slide_background.home_slide3::before {
     opacity: 1;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889305/Calmar_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346221/Calmar_hover.png');
 }
 
 .home_carousel_slide:hover .home_slide_background.home_slide4::before {
     opacity: 1;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755889303/Wednesday_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756346226/Wensday_hover.png');
 }
 
 .home_nav_button {
@@ -130,16 +130,17 @@
 
 .home_category_remove {
     display: inline-block;
-    width: 30px;
-    height: 30px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867535/Close_modal.png');
+    width: 20px;
+    height: 20px;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756347500/Remove.png');
     background-size: cover;
     margin-left: 8px;
     cursor: pointer;
+    transition: background-image 0.3s ease;
 }
 
 .home_category_remove:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755867040/Close_modal_light_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756347497/Remove_hover.png');
 }
 
 
@@ -149,38 +150,46 @@
 
 .home_nav_button.prev {
     left: 60px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755890954/Home_left_arrow.png');
+    transition: background-image 0.3s ease;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756350352/Arrow_left.png');
 }
 
 .home_nav_button.prev:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755890965/Home_left_arrow_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756350362/Arrow_left_hover.png');
 }
 
 .home_nav_button.next {
     right: 60px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755890934/Home_right_arrow.png');
+    transition: background-image 0.3s ease;
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756350368/Arrow_right.png');
 }
 
 .home_nav_button.next:hover {
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755890932/Home_right_arrow_hover.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756350357/Arrow_right_hover.png');
 }
 
 .home_categories {
     display: flex;
     flex-wrap: nowrap;
     gap: 30px;
-    margin-left: 60px;
     margin-top: 30px;
-    padding: 0 20px;
-    justify-content: center;
-    overflow-x: auto;
+    padding: 0;
+    overflow-x: auto !important;
     -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    justify-content: flex-start;
     scrollbar-width: none;
 }
+
+.home_categories_button:first-child {
+    margin-left: 60px;
+}
+
 
 .home_categories::-webkit-scrollbar {
     display: none;
     width: 0;
+    scroll-behavior: smooth;
     height: 0;
 }
 
@@ -194,9 +203,13 @@
     cursor: pointer;
     border: none;
     background-color: #4E55D4;
-    color: #fff;
-    transition: 0.2s;
+    color: #F8F8FE;
     flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    transition:  0.3s ease;
 }
 
 .home_categories_button:hover {
@@ -204,7 +217,7 @@
 }
 
 .home_categories_button.active {
-    background-color: #fff;
+    background-color: #F8F8FE;
     color: #000000;
 }
 
@@ -218,6 +231,12 @@
     border-radius: 8px;
     margin-right: 10px;
 }
+
 .content_card{
     padding: 0 60px;
 }
+
+
+
+
+

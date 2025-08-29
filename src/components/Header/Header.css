@@ -43,9 +43,8 @@
     text-decoration: none;
     font-weight: 400;
     font-size: 20px;
-    transition: color 0.2s, opacity 0.2s;
+    transition: color 0.3s ease;
 }
-
 .header_nav a:hover {
     color: #4E55D4;
     opacity: 1;
@@ -76,7 +75,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transition: transform 0.3s ease;
 }
 
 .header_search_right_icon.open{
@@ -85,7 +83,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transition: transform 0.3s ease;
 }
 
 .header_search_right_icon {
@@ -97,7 +94,6 @@
 }
 
 .header_search_right_icon.open {
-    transition: transform 0.3s ease;
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756244998/Close.png');
 }
 
@@ -108,7 +104,7 @@
 .header_search_left_icon {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756245849/Seach.png');
     flex-shrink: 0;
-    transition: transform 0.3s ease;
+    transition: background-image 0.3s ease;
 }
 
 .header_search_left_icon:hover {
@@ -117,7 +113,7 @@
 
 .header_search_box {
     position: relative;
-    min-width: 880px;
+    min-width: 850px;
 }
 
 .header_search_bar {
@@ -191,7 +187,7 @@
 .header_search_results .header_films_preview {
     width: 270px;
     flex-shrink: 0;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
 }
 
 .header_search_results .header_films_preview:hover {
@@ -211,11 +207,11 @@
     margin-left: 16px;
     flex-shrink: 0;
     cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .header_actor_preview{
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
     width: 150px;
 }
 
@@ -286,7 +282,7 @@
 .header_promo_icon {
     width: 40px;
     height: 40px;
-    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756247833/Promocode.png');
+    background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756410489/Promocode.png');
     background-size: contain;
     background-repeat: no-repeat;
     transition: transform 0.3s ease;
@@ -328,7 +324,7 @@
     font-size: 20px;
     font-weight: 400;
     cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-image 0.3s ease;
 }
 
 .header_log_button:hover {
@@ -372,7 +368,7 @@
     background-size: cover;
     background-position: center;
     box-shadow: 0 0 10px rgba(78, 85, 212, 0.5);
-    transition: box-shadow 0.2s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
 .header_arrow {
@@ -382,7 +378,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: background-image 0.3s ease;
 }
 
 .header_arrow.open {
@@ -417,7 +413,7 @@
     justify-content: space-between;
     padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-image 0.3s ease;
 }
 
 .profile_block {
@@ -446,8 +442,7 @@
     font-weight: 300;
     font-family: "Inter", sans-serif;
     color: #F8F8FE;
-
-    transition: color 0.2s ease-in-out;
+    transition: color 0.3s ease;
 }
 
 .check_icon {
@@ -591,7 +586,7 @@
     text-decoration: none;
     color: #F8F8FE;
     border-radius: 8px;
-    transition: background-color 0.2s;
+    transition: background-image 0.3s ease;
 }
 
 .search_item_card:hover {
@@ -661,5 +656,6 @@
 @media (min-width: 1920px) {
     .header_search_box {
         min-width: 1480px;
+
     }
 }

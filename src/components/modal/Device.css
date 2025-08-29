@@ -16,7 +16,6 @@
     border-radius: 15px;
     width: 1098px;
     height: 406px;
-    cursor: default;
     padding: 60px;
     color: #F8F8FE;
     box-sizing: border-box;
@@ -112,7 +111,7 @@
     cursor: pointer;
     background: linear-gradient(90deg,#3429B0,#4E55D4);
     color: #F8F8FE;
-    transition: background-color 0.4s;
+    transition: background-color 0.3s ease;
 }
 
 .device_block_button:hover {

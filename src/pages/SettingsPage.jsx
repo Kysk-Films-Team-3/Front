@@ -30,17 +30,17 @@ export const SettingsPage = ({ user, onOpenLogoutModal, onPaymentClick, onDevice
                     </div>
 
                     <div className="settings_block_title">Мої підписки</div>
+                    <Link to="/Premium" className="settings_premium_link">
                     <div className="settings_subscriptions_block">
                         <div className="settings_subscription_content">
                             <div className="settings_subscription_status">Преміум</div>
-                            <Link to="/Premium" className="settings_premium_link">
                                 <div className="settings_right_group">
                                     <button className="settings_manage_button">Підключити</button>
                                     <div className="settings_arrow_premium_icon"></div>
                                 </div>
-                            </Link>
                         </div>
                     </div>
+                    </Link>
                 </aside>
 
                 <main className="settings_main_content">
@@ -86,8 +86,8 @@ export const SettingsPage = ({ user, onOpenLogoutModal, onPaymentClick, onDevice
                                 className="settings_child_warning_icon"
                                 style={{
                                     backgroundImage: isChildProtectionEnabled
-                                        ? "url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755557148/%D0%91%D0%B5%D0%B7%D1%8B%D0%BC%D1%8F%D0%BD%D0%BD%D1%8B%D0%B9-1_bnydpf.png')"
-                                        : "url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1755557205/%D0%91%D0%B5%D0%B7%D1%8B%D0%BC%D1%8F%D0%BD%D0%BD%D1%8B%D0%B9-2_ka0bmu.png')",
+                                        ? "url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756245941/Protection_happy.png')"
+                                        : "url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756245939/Protection_Sad.png')",
 
                                 }}
                             ></div>
@@ -95,18 +95,8 @@ export const SettingsPage = ({ user, onOpenLogoutModal, onPaymentClick, onDevice
                                 <div className="settings_child_warning_title">
                                     {isChildProtectionEnabled ? 'Захист дітей включений' : 'Захист дітей вимкнено'}
                                 </div>
-                                <div className="settings_child_warning_subtitle" style={{ fontWeight: isChildProtectionEnabled ? 600 : 500 }}>
-
-                                    {isChildProtectionEnabled
-                                        ? <>
-                                            Діти можуть самостійно здійснювати покупки, переходити у дорослий <br/>  профіль та в Налаштування
-                                        </>
-                                        : <>
-                                            Діти можуть самостійно здійснювати покупки, переходити у дорослий  профіль<br/>  та в Налаштування
-                                        </>
-                                    }
-
-
+                                <div className="settings_child_warning_subtitle">
+                                            Діти можуть самостійно здійснювати покупки, переходити у дорослий профіль та в Налаштування
                                 </div>
                             </div>
                         </div>
@@ -149,7 +139,6 @@ export const SettingsPage = ({ user, onOpenLogoutModal, onPaymentClick, onDevice
             </div>
 
         </div>
-            <div className="settings_divider" > </div>
         </div>
 
     );

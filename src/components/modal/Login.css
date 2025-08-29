@@ -15,7 +15,7 @@
     font-family: "Raleway", sans-serif;
     width: 850px;
     height: 536px;
-    color: #fff;
+    color: #F8F8FE;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -216,7 +216,7 @@
 }
 
 .login_button {
-    color: #fff;
+    color: #F8F8FE;
     font-size: 16px;
     border: none;
     border-radius: 15px;
@@ -269,7 +269,7 @@
     display: flex;
     align-items: center;
     font-size: 16px;
-    color: #fff;
+    color: #F8F8FE;
     font-weight: 400;
     width: 480px;
 }
@@ -362,3 +362,6 @@
     color: #3429B0;
 }
 
+input::-ms-reveal {
+    display: none;
+}

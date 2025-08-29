@@ -104,7 +104,7 @@
 }
 
 .verify_input::placeholder {
-    color: #ccc;
+    color: #F8F8FE;
     letter-spacing: 0;
 }
 
@@ -145,7 +145,7 @@
     font-family: inherit;
     letter-spacing: inherit;
     border-radius: 15px;
-    color: white;
+    color: #F8F8FE;
     cursor: pointer;
     background: rgba(78, 85, 212, 0.5);
     transition: background 0.3s ease;

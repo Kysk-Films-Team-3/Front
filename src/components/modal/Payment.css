@@ -23,7 +23,6 @@
     width: 1025px;
     height: 541px;
     font-family: "Raleway", sans-serif;
-    cursor: default;
     padding: 60px;
     color: #F8F8FE;
     box-sizing: border-box;
@@ -138,6 +137,7 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
+    transition: background-image 0.3s ease;
 }
 .payment_copy_button:hover {
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254503/Copy_hover.png');
@@ -185,4 +185,5 @@
     background-image: url('https://res.cloudinary.com/da9jqs8yq/image/upload/v1756254685/Plus.png');
     background-size: contain;
     background-repeat: no-repeat;
+    transition: background-image 0.3s ease;
 }

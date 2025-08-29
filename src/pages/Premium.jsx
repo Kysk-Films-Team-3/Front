@@ -1,21 +1,29 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { getAuthUser } from  '../services/api';
 import "./Premium.css";
 
 export const Premium = () => {
+    const user = getAuthUser();
+    const isLoggedIn = !!user;
+
     return (
         <div className="premium_page">
             <div className="premium_header">
-                <Link to="/settings" className="premium_back">
-                    <span className="backs_icon"></span> До налаштувань
+                <Link
+                    to={isLoggedIn ? "/settings" : "/"}
+                    className="premium_back"
+                >
+                    <div className="premium_back_icon"></div>
+                    {isLoggedIn ? "До налаштувань" : "До головної"}
                 </Link>
             </div>
 
             <div className="premium_row">
-                <div className="title_line">
+                <div className="premium_title_line">
                     <div className="premium_title">Підтвердіть вибір</div>
                     <div className="premium_title">
-                        Kysk + преміум
+                        Kysk +преміум
                         <div className="premium_price">15€</div>
                     </div>
                 </div>
@@ -23,7 +31,7 @@ export const Premium = () => {
                 <div className="premium_left">
                     <div className="premium_line">
                         <span className="premium_feature_text">
-                            Більше 70 000 фільмів, серіалів та мультфільмів
+                            Більше <span className="premium_price">70 000</span> фільмів, серіалів та мультфільмів
                         </span>
                         <div className="premium_line_icon"></div>
                     </div>
@@ -47,8 +55,6 @@ export const Premium = () => {
                         <div className="premium_line_icon"></div>
                     </div>
                 </div>
-
-                <div className="premium_divider"></div>
             </div>
 
             <div className="premium_button_container">

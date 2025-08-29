@@ -24,7 +24,7 @@ export const Footer = () => {
 
                 <div className="footer_columns">
                     <div className="footer_col">
-                        <h4>Kysk</h4>
+                        <div className="footer_col_title">Kysk</div>
                         <div className="footer_col_links">
                             <Link to="/about" className="footer_col_link">О нас</Link>
                             <Link to="/careers" className="footer_col_link">Кар'єра в Kysk</Link>
@@ -32,7 +32,7 @@ export const Footer = () => {
                         </div>
                     </div>
                     <div className="footer_col">
-                        <h4>Допомога</h4>
+                        <div className="footer_col_title">Допомога</div>
                         <div className="footer_col_links">
                             <Link to="/faq" className="footer_col_link">Запитання та відповіді</Link>
                             <Link to="/devices" className="footer_col_link">Список пристроїв</Link>
@@ -41,7 +41,7 @@ export const Footer = () => {
                         </div>
                     </div>
                     <div className="footer_col">
-                        <h4>Інше</h4>
+                        <div className="footer_col_title">Інше</div>
                         <div className="footer_col_links">
                             <Link to="/offers" className="footer_col_link">Акції та пропозиції</Link>
                         </div>
@@ -55,11 +55,11 @@ export const Footer = () => {
                 </Link>
                 <div className="footer_text">
                     <div className="footer_main_text">
-                        © 2012-2025 ТОВ «Kysk»
+                        <span className="footer_main_date"> © 2012-2025</span> ТОВ «Kysk»
                         <br />
                         Загальноукраїнські канали доступні для безкоштовного перегляду цілодобово
                         <br />
-                        ПЗ ТОВ «Окко» полягає у реєстрі вітчизняного ПЗ
+                        ПЗ ТОВ «Kysk» полягає у реєстрі вітчизняного ПЗ
                     </div>
                     <div className="footer_links_vertical">
                         <div className="footer_link_line">
