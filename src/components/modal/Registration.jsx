@@ -1,13 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import './Registration.css';
 import { isValidEmailOrPhone } from '../../validation/validation';
-import { saveRememberMe, getRememberedUser, fakeRegisterEmail } from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
+import { Trans, useTranslation } from 'react-i18next';
 
 export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
-    const [email, setEmail] = useState(getRememberedUser() || '');
+    const { t } = useTranslation();
+    const { startRegistration } = useContext(AuthContext);
+
+    const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
-    const [rememberMe, setRememberMe] = useState(!!getRememberedUser());
+    const [rememberMe, setRememberMe] = useState(false);
     const registrationRef = useRef(null);
 
     useEffect(() => {
@@ -21,12 +25,19 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
 
         document.addEventListener('mousedown', handleClickOutside);
         document.body.style.overflow = 'hidden';
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
         };
     }, [isOpen, onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        setEmail('');
+        setError('');
+        setSubmitted(false);
+        setRememberMe(false);
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -36,20 +47,19 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
 
         const trimmedEmail = email.trim();
         if (!trimmedEmail || !isValidEmailOrPhone(trimmedEmail)) {
-            setError('Введіть коректний email або номер телефону');
+            setError('Please enter a valid email address or phone number.');
             return;
         }
 
         try {
-            const response = await fakeRegisterEmail(trimmedEmail);
+            const response = await startRegistration(trimmedEmail, rememberMe);
             if (response.success) {
-                saveRememberMe(trimmedEmail, rememberMe);
-                onRegisterSuccess(trimmedEmail);
+                onRegisterSuccess?.(trimmedEmail);
             } else {
-                setError(response.message || 'Помилка реєстрації');
+                setError(response.message || 'Registration error');
             }
         } catch {
-            setError('Помилка при зв\'язку з сервером');
+            setError('Error connecting to the server');
         }
     };
 
@@ -57,14 +67,14 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
 
     return (
         <div className="registration_overlay">
-            <div
-                className={`registration_modal ${submitted && error ? 'has-error' : ''}`}
-                ref={registrationRef}
-            >
+            <div className={`registration_modal ${submitted && error ? 'has-error' : ''}`} ref={registrationRef}>
                 <div className="registration_close_icon" onClick={onClose}></div>
-                <div className="registration_title">Реєстрація</div>
-                <div className="registration_subtitle">
-                    Готові дивитися? Введіть свою електронну адресу або <br /> мобільний телефон щоб створити акаунт.
+
+                <div className="registration_title">
+                    <Trans i18nKey="registration.title" />
+                </div>
+                <div className="registration_subtitle t-text-preline">
+                    <Trans i18nKey="registration.subtitle" />
                 </div>
 
                 <div className="registration_form">
@@ -78,7 +88,9 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
                             onChange={(e) => setEmail(e.target.value)}
                             autoComplete="username"
                         />
-                        <label htmlFor="email">Адреса електронної пошти або мобільний телефон</label>
+                        <label htmlFor="email">
+                            <Trans i18nKey="registration.emailOrPhone" />
+                        </label>
                         {submitted && error && (
                             <div className="registration_error_text">
                                 <div className="registration_error_icon"></div>
@@ -93,7 +105,7 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
                             className={`registration_button ${isFieldValid ? 'valid' : ''}`}
                             onClick={handleStart}
                         >
-                            Почати
+                            <Trans i18nKey="registration.startButton" />
                         </button>
                     </div>
 
@@ -105,17 +117,15 @@ export const Registration = ({ isOpen, onClose, onRegisterSuccess }) => {
                             >
                                 <div className="registration_checkbox_icon"></div>
                             </div>
-                            Запам'ятай мене
+                            <Trans i18nKey="registration.rememberMe" />
                         </label>
                     </div>
                 </div>
 
                 <div className="registration_terms">
-                    Продовжуючи, ви погоджуєтеся з KYSK{' '}
-                    <a href="/terms" target="_blank" rel="noopener noreferrer">Умовами використання</a> <br />
-                    Будь ласка, перегляньте наші{' '}
-                    <a href="/privacy" target="_blank" rel="noopener noreferrer">Повідомлення про конфіденційність</a>{' '}
-                    <a href="/cookies" target="_blank" rel="noopener noreferrer">повідомлення про файли cookie та повідомлення про рекламу на основі інтересів.</a>.
+                    {t('registration.terms')} <a href="/terms" target="_blank" rel="noopener noreferrer">{t('registration.termsLink')}</a><br />
+                    {t('registration.privacyNotice')} <a href="/privacy" target="_blank" rel="noopener noreferrer">{t('registration.privacyLink')}</a>{' '}
+                    <a href="/cookies" target="_blank" rel="noopener noreferrer">{t('registration.cookiesLink')}</a>
                 </div>
             </div>
         </div>

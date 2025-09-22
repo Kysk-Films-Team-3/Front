@@ -268,3 +268,8 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #F8F8FE !important;
     transition: background-color 5000s ease-in-out 0s;
 }
+
+.t-text-preline {
+    white-space: pre-line;
+    text-align: center;
+}

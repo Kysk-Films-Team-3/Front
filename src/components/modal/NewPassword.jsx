@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { setForgotPasswordAPI } from '../../services/api';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useTranslation, Trans } from 'react-i18next';
 import './NewPassword.css';
+import { isValidPassword } from '../../validation/validation';
 
-export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }) => {
+export const NewPassword = ({ isOpen, onClose, onPasswordCreated }) => {
+    useTranslation();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const newRef = useRef(null);
 
+    const { emailOrPhone, createPassword } = useContext(AuthContext);
+
     useEffect(() => {
         if (!isOpen) return;
-
         const handleClickOutside = (event) => {
             if (newRef.current && !newRef.current.contains(event.target)) onClose();
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         document.body.style.overflow = 'hidden';
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
@@ -32,38 +34,53 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
         setSubmitted(true);
         setError('');
 
-        if (!password || password.length < 4) {
-            setError('Пароль має містити мінімум 4 символи');
+        const trimmedPassword = password.trim();
+        const trimmedConfirm = confirmPassword.trim();
+
+        if (!isValidPassword(trimmedPassword)) {
+            setError('Password error');
             return;
         }
-        if (password !== confirmPassword) {
-            setError('Паролі не співпадають');
+
+        if (trimmedPassword !== trimmedConfirm) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        if (!emailOrPhone) {
+            setError('Email required');
+            return;
+        }
+
+        const storedUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]');
+        const currentUser = storedUsers.find(u => u.emailOrPhone === emailOrPhone);
+        if (currentUser && currentUser.password === trimmedPassword) {
+            setError('New password is same as current');
             return;
         }
 
         try {
-            const res = await setForgotPasswordAPI(emailOrPhone, password);
-            if (res.success && typeof onPasswordCreated === 'function') {
-                localStorage.setItem('user', JSON.stringify({ emailOrPhone }));
-                onPasswordCreated({ emailOrPhone });
+            const res = await createPassword(emailOrPhone, trimmedPassword);
+            if (res.success) {
+                setPassword('');
+                setConfirmPassword('');
+                onPasswordCreated();
             } else {
-                setError(res.message || 'Сталася помилка');
+                setError(res.message || 'Server error');
             }
         } catch {
-            setError('Сталася помилка. Спробуйте ще раз.');
+            setError('Server error');
         }
     };
 
-    const isValid = password.length >= 4 && password === confirmPassword;
+    const isValid = isValidPassword(password.trim()) && password === confirmPassword;
 
     return (
         <div className="new_overlay">
             <div className={`new_modal ${submitted && error ? 'new_has-errors' : ''}`} ref={newRef}>
                 <div className="new_close_icon" onClick={onClose}></div>
-                <div className="new_title">Створіть новий пароль</div>
-                <div className="new_subtitle">
-                    Щоб продовжити, створіть новий пароль, який не є вашим поточним
-                </div>
+                <div className="new_title"><Trans i18nKey="newPassword.title" /></div>
+                <div className="new_subtitle"><Trans i18nKey="newPassword.subtitle" /></div>
                 <form className="new_form" onSubmit={handleSubmit}>
                     <div className="new_input_group">
                         <input
@@ -73,7 +90,7 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <label>Новий пароль</label>
+                        <label><Trans i18nKey="newPassword.passwordLabel" /></label>
                     </div>
 
                     <div className="new_input_group">
@@ -84,7 +101,7 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
-                        <label>Повторити новий пароль</label>
+                        <label><Trans i18nKey="newPassword.confirmPasswordLabel" /></label>
                     </div>
 
                     {submitted && error && (
@@ -99,7 +116,7 @@ export const NewPassword = ({ isOpen, onClose, emailOrPhone, onPasswordCreated }
                             type="submit"
                             className={`new_button ${isValid ? 'valid' : ''}`}
                         >
-                            Продовжити
+                            <Trans i18nKey="newPassword.submit" />
                         </button>
                     </div>
                 </form>

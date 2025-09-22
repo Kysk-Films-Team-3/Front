@@ -166,8 +166,7 @@
     gap: 40px;
 }
 
-.header_search_results::before {
-    content: "Часто шукають";
+.header_search_label {
     font-size: 24px;
     font-weight: 600;
     margin-left: 15px;

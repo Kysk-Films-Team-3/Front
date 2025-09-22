@@ -1,23 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import './Header.css';
 import { getPopularFilms, getPopularActors } from '../../services/api';
 
 export const Header = ({ onLoginClick, user }) => {
+    const { t, i18n } = useTranslation();
     const location = useLocation();
     const isPremiumPage = location.pathname === '/Premium';
-
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isSearchHovered, setIsSearchHovered] = useState(false);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState({ films: [], actors: [] });
-
     const [popularFilms, setPopularFilms] = useState([]);
     const [popularActors, setPopularActors] = useState([]);
-
     const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const savedLang = localStorage.getItem('lang');
+        if (savedLang && savedLang !== i18n.language) {
+            i18n.changeLanguage(savedLang).catch(() => {});
+        }
+    }, [i18n]);
+
+    const changeLanguage = (lang) => {
+        i18n.changeLanguage(lang).catch(() => {});
+        localStorage.setItem('lang', lang);
+    };
 
     useEffect(() => {
         (async () => {
@@ -40,13 +50,10 @@ export const Header = ({ onLoginClick, user }) => {
             setSearchResults({ films: [], actors: [] });
             return;
         }
-
         const lowerCaseQuery = query.toLowerCase();
-
         const filteredFilms = popularFilms.filter(film =>
             film.title.toLowerCase().includes(lowerCaseQuery)
         );
-
         const filteredActors = popularActors.filter(actor =>
             actor.name.toLowerCase().includes(lowerCaseQuery)
         );
@@ -110,17 +117,17 @@ export const Header = ({ onLoginClick, user }) => {
                         <img
                             src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754083133/Logo.png"
                             className="header_logo"
-                            alt="Логотип"
+                            alt="Logo"
                         />
                     </Link>
 
                     {!isSearchOpen && !isPremiumPage && (
                         <nav className="header_nav">
-                            <NavLink to="/" end>Головна</NavLink>
-                            <NavLink to="/catalog">Каталог</NavLink>
-                            <NavLink to="/tv">TV шоу</NavLink>
-                            <NavLink to="/new">Нове § Популярне</NavLink>
-                            <NavLink to="/favorites">Обране</NavLink>
+                            <NavLink to="/" end><Trans i18nKey="header.nav.home" /></NavLink>
+                            <NavLink to="/catalog"><Trans i18nKey="header.nav.catalog" /></NavLink>
+                            <NavLink to="/tv"><Trans i18nKey="header.nav.tvShows" /></NavLink>
+                            <NavLink to="/new"><Trans i18nKey="header.nav.newAndPopular" /></NavLink>
+                            <NavLink to="/favorites"><Trans i18nKey="header.nav.favorites" /></NavLink>
                         </nav>
                     )}
 
@@ -130,7 +137,7 @@ export const Header = ({ onLoginClick, user }) => {
                                 <div className="header_search_left_icon" />
                                 <input
                                     type="text"
-                                    placeholder="Назва фільму, серіалу, ім’я актора, режисера"
+                                    placeholder={String(t("header.search.placeholder"))}
                                     autoFocus
                                     value={searchQuery}
                                     onChange={handleSearchInputChange}
@@ -140,6 +147,7 @@ export const Header = ({ onLoginClick, user }) => {
                                 <div className={`header_search_results ${showPopular ? '' : 'no-before'}`}>
                                     {showPopular ? (
                                         <>
+                                            <span className="header_search_label"><Trans i18nKey="searchFrequently" /></span>
                                             <div className="header_search_films">
                                                 {popularFilms.map(film => (
                                                     <div key={film.id} className="header_film_card">
@@ -154,8 +162,8 @@ export const Header = ({ onLoginClick, user }) => {
                                                     <div key={actor.id} className="header_actor_card">
                                                         <Link to={`/actor/${actor.id}`}>
                                                             <img src={actor.image} className="header_actor_preview" alt={actor.name} />
-                                                            <p className="header_actor_name">{actor.name}</p>
-                                                            <p className="header_actor_role">{actor.role}</p>
+                                                            <p className="header_actor_name"><Trans i18nKey={`actors.${actor.name}`} /></p>
+                                                            <p className="header_actor_role"><Trans i18nKey={`actorRoles.${actor.role}`} /></p>
                                                         </Link>
                                                     </div>
                                                 ))}
@@ -166,14 +174,16 @@ export const Header = ({ onLoginClick, user }) => {
                                             <div className="search_results_columns">
                                                 {searchResults.films.length > 0 && (
                                                     <div className="search_results_films_column">
-                                                        <h3>Фільми та серіали</h3>
+                                                        <h3><Trans i18nKey="category.films" /></h3>
                                                         {searchResults.films.map(film => (
                                                             <Link to={`/film/${film.id}`} key={film.id} className="search_item_card">
                                                                 <img src={film.image} className="search_item_image" alt={film.title} />
                                                                 <div className="search_item_info">
-                                                                    <p className="search_item_title">{film.title} <span className="search_item_type">(фільм)</span></p>
+                                                                    <p className="search_item_title">
+                                                                        {film.title} <span className="search_item_type">(<Trans i18nKey="category.films" />)</span>
+                                                                    </p>
                                                                     <p className="search_item_rating">6.8 <span className="search_item_year">(2023)</span></p>
-                                                                    <p className="search_item_genre">США • Пригоди</p>
+                                                                    <p className="search_item_genre">USA • Adventure</p>
                                                                 </div>
                                                             </Link>
                                                         ))}
@@ -181,12 +191,14 @@ export const Header = ({ onLoginClick, user }) => {
                                                 )}
                                                 {searchResults.actors.length > 0 && (
                                                     <div className="search_results_actors_column">
-                                                        <h3>Актори та режисери</h3>
+                                                        <h3><Trans i18nKey="category.series" /></h3>
                                                         {searchResults.actors.map(actor => (
                                                             <Link to={`/actor/${actor.id}`} key={actor.id} className="search_item_card actor">
                                                                 <img src={actor.image} className="search_item_image_actor" alt={actor.name} />
                                                                 <div className="search_item_info">
-                                                                    <p className="search_item_title">{actor.name} <span className="search_item_type">(акторка)</span></p>
+                                                                    <p className="search_item_title">
+                                                                        {actor.name} <span className="search_item_type">(Actor)</span>
+                                                                    </p>
                                                                     <p className="search_item_birthdate">Barbara Ferreira, 1996</p>
                                                                 </div>
                                                             </Link>
@@ -195,7 +207,7 @@ export const Header = ({ onLoginClick, user }) => {
                                                 )}
                                             </div>
                                             {searchResults.films.length === 0 && searchResults.actors.length === 0 && (
-                                                <p className="no_results_text">Результатів не знайдено</p>
+                                                <p className="no_results_text"><Trans i18nKey="home.errorLoading" /></p>
                                             )}
                                         </div>
                                     )}
@@ -222,12 +234,12 @@ export const Header = ({ onLoginClick, user }) => {
                     )}
 
                     {!isPremiumPage && (
-                        <Link to="/Premium" className="header_premium"> Оформити преміум </Link>
+                        <Link to="/Premium" className="header_premium"><Trans i18nKey="header.premium" /></Link>
                     )}
 
                     <div className="header_promo">
                         <div className="header_promo_icon" />
-                        <span className="header_promo_text">Ввести промокод</span>
+                        <span className="header_promo_text"><Trans i18nKey="header.promo" /></span>
                     </div>
 
                     {user ? (
@@ -255,19 +267,26 @@ export const Header = ({ onLoginClick, user }) => {
                                         <li>
                                             <Link to="/profile" onClick={handleMenuItemClick} className="dropdown_link">
                                                 <div className="dropdown_icon manage_icon"></div>
-                                                Керувати профілем
+                                                <Trans i18nKey="header.dropdown.manageProfile" />
                                             </Link>
                                         </li>
                                         <li>
                                             <Link to="/settings" onClick={handleMenuItemClick} className="dropdown_link">
                                                 <div className="dropdown_icon settings_icon"></div>
-                                                Перейти до налаштувань
+                                                <Trans i18nKey="header.dropdown.settings" />
                                             </Link>
                                         </li>
                                         <li>
-                                            <button className="dropdown_link language_switch" onClick={handleMenuItemClick}>
+                                            <button
+                                                className="dropdown_link language_switch"
+                                                onClick={() => {
+                                                    const newLang = i18n.language === 'ua' ? 'en' : 'ua';
+                                                    changeLanguage(newLang);
+                                                    handleMenuItemClick();
+                                                }}
+                                            >
                                                 <div className="dropdown_icon language_icon"></div>
-                                                English
+                                                {i18n.language === 'ua' ? 'English' : 'Українська'}
                                             </button>
                                         </li>
                                     </ul>
@@ -277,7 +296,7 @@ export const Header = ({ onLoginClick, user }) => {
                     ) : (
                         <div onClick={onLoginClick} className="header_log_button">
                             <div className="log_button_icon"></div>
-                            <span>Увійти</span>
+                            <span><Trans i18nKey="header.login" /></span>
                         </div>
                     )}
                 </div>

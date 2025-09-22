@@ -97,3 +97,8 @@
 .logout_exit_button:hover {
     background: #414250;
 }
+
+.t-text-preline {
+    white-space: pre-line;
+    text-align: center;
+}

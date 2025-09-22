@@ -1,7 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegistrationComplete.css';
-export const RegistrationComplete = ({ onClose, email }) => {
+import { AuthContext } from '../../context/AuthContext';
+import { Trans } from 'react-i18next';
+
+export const RegistrationComplete = ({ onClose }) => {
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const regcompleteRef = useRef(null);
 
@@ -26,15 +30,20 @@ export const RegistrationComplete = ({ onClose, email }) => {
         };
     }, [onClose]);
 
+    if (!user) return null;
+
     return (
         <div className="registration_complete_overlay" role="dialog" aria-modal="true">
             <div className="registration_complete_modal" ref={regcompleteRef}>
                 <div className="registration_complete_close_icon" onClick={onClose}></div>
-                <div className="registration_complete_title">Обліковий запис створено</div>
-                <div className="registration_complete_subtitle">
-                    Використовуйте цю електронну адресу для доступу до свого <br />
-                    облікового запису:{" "}
-                    <span className="registration_complete_email">{email}</span>
+                <div className="registration_complete_title">
+                    <Trans i18nKey="registrationComplete.title" />
+                </div>
+                <div className="registration_complete_subtitle t-text-preline">
+                    <Trans
+                        i18nKey="registrationComplete.subtitle"
+                        values={{ email: user.emailOrPhone }}
+                    />
                 </div>
 
                 <div className="registration_complete_button_block">
@@ -42,7 +51,7 @@ export const RegistrationComplete = ({ onClose, email }) => {
                         className="registration_complete_button"
                         onClick={handleComplete}
                     >
-                        Далі
+                        <Trans i18nKey="registrationComplete.button" />
                     </button>
                 </div>
             </div>

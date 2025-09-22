@@ -1,20 +1,23 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import { Trans } from 'react-i18next';
 import './ForgotComplete.css';
 
-export const ForgotComplete = ({ onClose, email }) => {
+export const ForgotComplete = () => {
     const navigate = useNavigate();
     const forgotcompleteRef = useRef(null);
+    const { closeModal, emailOrPhone } = useContext(AuthContext);
 
     const handleComplete = () => {
-        onClose();
+        closeModal();
         navigate('/');
     };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (forgotcompleteRef.current && !forgotcompleteRef.current.contains(event.target)) {
-                onClose();
+                closeModal();
             }
         };
 
@@ -25,17 +28,19 @@ export const ForgotComplete = ({ onClose, email }) => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
         };
-    }, [onClose]);
+    }, [closeModal]);
 
     return (
         <div className="forgot_complete_overlay" role="dialog" aria-modal="true">
             <div className="forgot_complete_modal" ref={forgotcompleteRef}>
-                <div className="forgot_complete_close_icon" onClick={onClose}></div>
-                <div className="forgot_complete_title">Обліковий запис відновлено</div>
-                <div className="forgot_complete_subtitle">
-                    Використовуйте цю електронну адресу для доступу до свого <br />
-                    облікового запису:{" "}
-                    <span className="forgot_complete_email">{email}</span>
+                <div className="forgot_complete_close_icon" onClick={closeModal}></div>
+
+                <div className="forgot_complete_title">
+                    <Trans i18nKey="forgotComplete.title" />
+                </div>
+
+                <div className="forgot_complete_subtitle t-text-preline">
+                    <Trans i18nKey="forgotComplete.subtitle" values={{ email: emailOrPhone }} />
                 </div>
 
                 <div className="forgot_complete_button_block">
@@ -43,7 +48,7 @@ export const ForgotComplete = ({ onClose, email }) => {
                         className="forgot_complete_button"
                         onClick={handleComplete}
                     >
-                        Далі
+                        <Trans i18nKey="forgotComplete.button" />
                     </button>
                 </div>
             </div>

@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import './Login.css';
 import { isValidEmailOrPhone, isValidPassword } from '../../validation/validation';
 import { AuthContext } from '../../context/AuthContext';
+import { Trans, useTranslation } from 'react-i18next';
 
 export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
-    const { login, userEmail: rememberedEmail } = useContext(AuthContext);
+    const { t } = useTranslation();
+    const { login, remembered } = useContext(AuthContext);
 
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
@@ -20,19 +22,11 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
     useEffect(() => {
         if (!isOpen) return;
 
-        const mockUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]');
-        if (mockUsers.length > 0) {
-            const usersText = mockUsers
-                .map((u, i) => `${i + 1}. Email: ${u.emailOrPhone}, Password: ${u.password}`)
-                .join('\n\n');
-            alert(`mockUsers:\n\n${usersText}`);
-        }
-
-        setEmailOrPhone(rememberedEmail || '');
+        setEmailOrPhone(remembered || '');
         setPassword('');
-        setRememberMe(!!rememberedEmail);
+        setRememberMe(!!remembered);
         setErrors({ emailOrPhone: '', password: '' });
-    }, [isOpen, rememberedEmail]);
+    }, [isOpen, remembered]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -64,12 +58,12 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
         let valid = true;
 
         if (!isValidEmailOrPhone(emailOrPhone.trim())) {
-            newErrors.emailOrPhone = 'Будь ласка, введіть дійсну електронну адресу.';
+            newErrors.emailOrPhone = "Please enter a valid email or phone";
             valid = false;
         }
 
         if (!isValidPassword(password)) {
-            newErrors.password = 'Ваш пароль має містити від 4 до 60 символів.';
+            newErrors.password = "Password must be at least 8 characters";
             valid = false;
         }
 
@@ -83,13 +77,13 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
         if (!validateFields()) return;
 
         try {
-            const response = await login(emailOrPhone, password, rememberMe);
+            const response = await login(emailOrPhone.trim(), password, rememberMe);
 
             if (!response.success) {
                 const apiErrors = { emailOrPhone: '', password: '' };
                 const msg = response.message?.toLowerCase() || '';
 
-                if (msg.includes('не знайдений') || msg.includes('not found')) {
+                if (msg.includes('не знайден') || msg.includes('not found')) {
                     apiErrors.emailOrPhone = response.message;
                 } else {
                     apiErrors.password = response.message;
@@ -100,17 +94,20 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
                 onClose();
             }
         } catch {
-            setErrors({ emailOrPhone: '', password: 'Помилка при спробі увійти' });
+            setErrors({ emailOrPhone: '', password: "Login failed" });
         }
     };
 
-    const canSubmit = isValidEmailOrPhone(emailOrPhone) && isValidPassword(password);
+    const canSubmit = isValidEmailOrPhone(emailOrPhone.trim()) && isValidPassword(password);
+
+    if (!isOpen) return null;
 
     return (
         <div className="login_overlay" role="dialog" aria-modal="true">
             <div className={`login_modal ${errors.emailOrPhone || errors.password ? 'has-errors' : ''}`} ref={loginRef}>
                 <div className="login_close_icon" onClick={onClose}></div>
-                <div className="login_title">Вхід</div>
+
+                <div className="login_title"><Trans i18nKey="login.title" /></div>
 
                 <form className="login_form" onSubmit={handleSubmit}>
                     <div className="login_input_block">
@@ -123,7 +120,7 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
                             onChange={e => setEmailOrPhone(e.target.value)}
                             autoComplete="username"
                         />
-                        <label htmlFor="email">Адреса електронної пошти або мобільний телефон</label>
+                        <label htmlFor="email"><Trans i18nKey="login.emailOrPhone" /></label>
                         {errors.emailOrPhone && (
                             <div className="login_error_text">
                                 <div className="login_error_icon" />
@@ -145,7 +142,7 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
                             onBlur={handleBlur}
                             autoComplete="current-password"
                         />
-                        <label htmlFor="password">Пароль</label>
+                        <label htmlFor="password"><Trans i18nKey="login.password" /></label>
                         {(focused || showPassword) && (
                             <button
                                 ref={toggleButtonRef}
@@ -156,7 +153,7 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                             >
-                                <span className={`login_eye_icon ${showPassword ? 'login_eye_closed'  : 'login_eye_open'}`} />
+                                <span className={`login_eye_icon ${showPassword ? 'login_eye_closed' : 'login_eye_open'}`} />
                             </button>
                         )}
 
@@ -169,34 +166,35 @@ export const Login = ({ isOpen, onClose, onForgot, onRegisterClick }) => {
                     </div>
 
                     <div className="login_block">
-                        <button type="submit" className={`login_button ${canSubmit ? 'valid' : ''}`}>Увійти</button>
+                        <button type="submit" className={`login_button ${canSubmit ? 'valid' : ''}`}><Trans i18nKey="login.loginButton" /></button>
                     </div>
                 </form>
 
                 <div className="login_forgot_block">
-                    <button type="button" className="login_forgot_link" onClick={onForgot}>Забули пароль?</button>
+                    <button type="button" className="login_forgot_link" onClick={onForgot}><Trans i18nKey="login.forgotPassword" /></button>
                 </div>
 
                 <div className="login_remember_block">
                     <div className="login_remember_wrapper">
-                        <div className={`login_custom_checkbox ${rememberMe ? 'login_checked' : ''}`} onClick={() => setRememberMe(!rememberMe)}></div>
-                        <span onClick={() => setRememberMe(!rememberMe)}>Запам'ятай мене</span>
+                        <div
+                            className={`login_custom_checkbox ${rememberMe ? 'login_checked' : ''}`}
+                            onClick={() => setRememberMe(!rememberMe)}
+                        ></div>
+                        <span onClick={() => setRememberMe(!rememberMe)}><Trans i18nKey="login.rememberMe" /></span>
                     </div>
                 </div>
 
                 <div className="login_register_block">
-                    Вперше на KYSKFilms?{' '}
+                    <Trans i18nKey="login.firstTime" />{' '}
                     <button type="button" className="login_register_link" onClick={onRegisterClick}>
-                        Створіть свій обліковий запис KYSK.
+                        <Trans i18nKey="login.register" />
                     </button>
                 </div>
 
                 <div className="login_terms_block">
-                    Продовжуючи, ви погоджуєтеся з KYSK{' '}
-                    <a href="/terms" target="_blank" rel="noopener noreferrer">Умовами використання</a><br />
-                    Будь ласка, перегляньте наші{' '}
-                    <a href="/privacy" target="_blank" rel="noopener noreferrer">Повідомлення про конфіденційність,</a>{' '}
-                    <a href="/cookies" target="_blank" rel="noopener noreferrer">повідомлення про файли cookie та повідомлення про рекламу на основі інтересів.</a>
+                    {t('login.terms')} <a href="/terms" target="_blank" rel="noopener noreferrer">{t('login.termsLink')}</a><br />
+                    {t('login.privacyNotice')} <a href="/privacy" target="_blank" rel="noopener noreferrer">{t('login.privacyLink')}</a>{' '}
+                    <a href="/cookies" target="_blank" rel="noopener noreferrer">{t('login.cookiesLink')}</a>
                 </div>
             </div>
         </div>

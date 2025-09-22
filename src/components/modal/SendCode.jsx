@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useTranslation, Trans } from 'react-i18next';
 import './SendCode.css';
 import { isValidVerificationCode, isValidDigit, getVerificationCodeError } from '../../validation/validation';
-import { sendVerificationCodeAPI, verifyCodeAPI } from '../../services/api';
 
-export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
+export const SendCode = ({ isOpen, onClose, onCodeVerified }) => {
+    useTranslation();
     const LENGTH = 5;
     const [code, setCode] = useState(new Array(LENGTH).fill(''));
     const [errors, setErrors] = useState({ code: '' });
@@ -11,16 +13,15 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
     const inputsRef = useRef([]);
     const sendRef = useRef(null);
 
+    const { emailOrPhone: email, setEmailOrPhone, sendRegistrationCode, verifyRegistrationCode } = useContext(AuthContext);
+
     useEffect(() => {
         if (!isOpen) return;
-
         const handleClickOutside = (event) => {
             if (sendRef.current && !sendRef.current.contains(event.target)) onClose();
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         document.body.style.overflow = 'hidden';
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
@@ -29,13 +30,13 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
 
     useEffect(() => {
         if (isOpen && email) {
-            sendVerificationCodeAPI(email).then(res => {
-                alert('Тестовый код: ' + res.code);
+            sendRegistrationCode(email).then(res => {
+                if (res.success) alert('Test code: ' + res.code); // не переводим alert
             });
             setCode(new Array(LENGTH).fill(''));
             setErrors({ code: '' });
         }
-    }, [isOpen, email]);
+    }, [isOpen, email, sendRegistrationCode]);
 
     useEffect(() => {
         setIsValid(isValidVerificationCode(code, LENGTH));
@@ -61,17 +62,14 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
     const handleKeyDown = (e, index) => {
         if (e.key === 'Backspace') {
             e.preventDefault();
-            const newSendCode = [...code];
-            if (newSendCode[index] !== '') {
-                newSendCode[index] = '';
-                setCode(newSendCode);
-                setErrors({ code: '' });
-            } else if (index > 0) {
+            const newCode = [...code];
+            if (newCode[index] !== '') newCode[index] = '';
+            else if (index > 0) {
                 focusInput(index - 1);
-                newSendCode[index - 1] = '';
-                setCode(newSendCode);
-                setErrors({ code: '' });
+                newCode[index - 1] = '';
             }
+            setCode(newCode);
+            setErrors({ code: '' });
         }
     };
 
@@ -82,19 +80,17 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
             setErrors({ code: errorMessage });
             return;
         }
-
         const fullCode = code.join('');
-        const response = await verifyCodeAPI(email, fullCode);
-        if (response.success) {
+        const res = await verifyRegistrationCode(email, fullCode);
+        if (res.success) {
+            setEmailOrPhone(email);
             onCodeVerified();
-        } else {
-            setErrors({ code: response.message });
-        }
+        } else setErrors({ code: res.message || 'Invalid code' });
     };
 
     const handleResendCode = async () => {
-        const res = await sendVerificationCodeAPI(email);
-        alert('Тестовый код: ' + res.code);
+        const res = await sendRegistrationCode(email);
+        if (res.success) alert('Test code: ' + res.code);
         setCode(new Array(LENGTH).fill(''));
         setErrors({ code: '' });
         setIsValid(false);
@@ -105,15 +101,15 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
         <div className="send_overlay">
             <div className={`send_modal ${errors.code ? 'has-errors' : ''}`} ref={sendRef}>
                 <div className="send_close" onClick={onClose}></div>
-                <div className="send_title">
-                    Перевірте свою поштову скриньку <br/> або повідомлення
+                <div className="send_title t-text-preline">
+                    <Trans i18nKey="sendCode.checkMailbox" />
                 </div>
-                <div className="send_description">
-                    Щоб продовжити, виконайте цей крок підтвердження. Ми надіслали одноразовий пароль на електронну адресу {" "}
-                    <span className="registration_complete_email">{email}.</span> {" "}
-                    Будь <br/> ласка, введіть його нижче.
+                <div className="send_description t-text-preline">
+                    <Trans
+                        i18nKey="sendCode.description"
+                        values={{ email }}
+                    />
                 </div>
-
                 <form className="send_form" onSubmit={handleSubmit} noValidate>
                     <div className="send_input_group">
                         {code.map((num, i) => (
@@ -131,22 +127,13 @@ export const SendCode = ({ isOpen, onClose, email, onCodeVerified }) => {
                             />
                         ))}
                     </div>
-
-                    {errors.code && (
-                        <div className="send_error_text">
-                            <div className="send_error_icon"></div>
-                            {errors.code}
-                        </div>
-                    )}
-
+                    {errors.code && <div className="send_error_text"><div className="send_error_icon"></div>{errors.code}</div>}
                     <button type="submit" className={`send_button ${isValid ? 'valid' : ''}`}>
-                        Продовжити
+                        <Trans i18nKey="sendCode.continue" />
                     </button>
                 </form>
-
                 <button className="send_resend" onClick={handleResendCode}>
-                    <span className="send_refresh_icon"></span>
-                    Надіслати код повторно
+                    <span className="send_refresh_icon"></span> <Trans i18nKey="sendCode.resend" />
                 </button>
             </div>
         </div>

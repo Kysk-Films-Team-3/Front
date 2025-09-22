@@ -1,145 +1,155 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes/AppRoutes';
 import { Login } from './components/modal/Login';
-import { Registration } from './components/modal/Registration';
 import { Forgot } from './components/modal/Forgot';
-import { NewPassword } from './components/modal/NewPassword';
+import { Registration } from './components/modal/Registration';
+import { SendCode } from './components/modal/SendCode';
 import { CreatePassword } from './components/modal/CreatePassword';
 import { RegistrationComplete } from './components/modal/RegistrationComplete';
+import { NewPassword } from './components/modal/NewPassword';
 import { ForgotComplete } from './components/modal/ForgotComplete';
 import { VerifyCode } from './components/modal/VerifyCode';
-import { SendCode } from './components/modal/SendCode';
 import { Device } from './components/modal/Device';
 import { Payment } from './components/modal/Payment';
 import { Logout } from './components/modal/Logout';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { SettingsProvider } from './context/SettingsContext';
+import { ActorProvider } from './context/ActorContext';
+import { ActorRecommendations } from './components/modal/ActorRecommendations';
 
 export const App = () => {
-    const [activeModal, setActiveModal] = useState(null);
-    const [userEmail, setUserEmail] = useState('');
-
-    const closeModal = () => setActiveModal(null);
-
     return (
         <AuthProvider>
-            <AppWithContext
-                activeModal={activeModal}
-                setActiveModal={setActiveModal}
-                closeModal={closeModal}
-                userEmail={userEmail}
-                setUserEmail={setUserEmail}
-            />
+            <SettingsProvider>
+                <ActorProvider>
+                    <BrowserRouter>
+                        <AppContent />
+                    </BrowserRouter>
+                </ActorProvider>
+            </SettingsProvider>
         </AuthProvider>
     );
 };
 
-const AppWithContext = ({ activeModal, setActiveModal, closeModal, userEmail, setUserEmail }) => {
-    const { user, logout } = useContext(AuthContext);
+const AppContent = () => {
+    const {
+        activeModal,
+        openModal,
+        closeModal,
+        emailOrPhone,
+        setEmailOrPhone,
+        logout,
+        user,
+        allContent,
+    } = useContext(AuthContext);
 
     return (
-        <BrowserRouter>
+        <>
             <AppRoutes
-                onLoginClick={() => setActiveModal('Login')}
-                onDeviceClick={() => setActiveModal('Device')}
-                onPaymentClick={() => setActiveModal('Payment')}
-                onOpenLogoutModal={() => setActiveModal('Logout')}
-                isLoggedIn={!!user}
+                onLoginClick={() => openModal('login')}
+                onDeviceClick={() => openModal('device')}
+                onPaymentClick={() => openModal('payment')}
+                onOpenLogoutModal={() => openModal('logout')}
+                onOpenActorRecs={(actor) => openModal({ type: 'actorRecs', actor })}
                 user={user}
+                isLoggedIn={!!user}
             />
 
-            {activeModal === 'Login' && (
+            {activeModal === 'login' && (
                 <Login
                     isOpen
                     onClose={closeModal}
-                    onRegisterClick={() => setActiveModal('Registration')}
-                    onForgot={() => setActiveModal('Forgot')}
+                    onForgot={() => openModal('forgot')}
+                    onRegisterClick={() => openModal('registration')}
+                    setEmailOrPhone={setEmailOrPhone}
                 />
             )}
 
-            {activeModal === 'Forgot' && (
+            {activeModal === 'forgot' && (
                 <Forgot
                     isOpen
                     onClose={closeModal}
+                    setEmailOrPhone={setEmailOrPhone}
                     onSuccess={(email) => {
-                        setUserEmail(email);
-                        setActiveModal('Verify');
+                        setEmailOrPhone(email);
+                        openModal('verifyCode');
                     }}
                 />
             )}
 
-            {activeModal === 'Verify' && (
-                <VerifyCode
-                    isOpen
-                    onClose={closeModal}
-                    emailOrPhone={userEmail}
-                    onVerified={() => setActiveModal('NewPassword')}
-                />
-            )}
-
-            {activeModal === 'NewPassword' && (
-                <NewPassword
-                    isOpen
-                    onClose={closeModal}
-                    emailOrPhone={userEmail}
-                    onPasswordCreated={() => setActiveModal('ForgotComplete')}
-                />
-            )}
-
-            {activeModal === 'ForgotComplete' && (
-                <ForgotComplete
-                    isOpen
-                    onClose={closeModal}
-                    email={userEmail}
-                />
-            )}
-
-            {activeModal === 'Registration' && (
+            {activeModal === 'registration' && (
                 <Registration
                     isOpen
                     onClose={closeModal}
-                    onRegisterSuccess={(email) => {
-                        setUserEmail(email);
-                        setActiveModal('SendCode');
+                    onRegisterSuccess={() => openModal('sendCode')}
+                    setEmailOrPhone={setEmailOrPhone}
+                />
+            )}
+
+            {activeModal === 'sendCode' && (
+                <SendCode
+                    isOpen
+                    onClose={closeModal}
+                    onCodeVerified={() => openModal('createPassword')}
+                />
+            )}
+
+            {activeModal === 'createPassword' && (
+                <CreatePassword
+                    isOpen
+                    onClose={closeModal}
+                    onPasswordCreated={() => openModal('registrationComplete')}
+                />
+            )}
+
+            {activeModal === 'registrationComplete' && (
+                <RegistrationComplete isOpen onClose={closeModal} />
+            )}
+
+            {activeModal === 'device' && <Device isOpen onClose={closeModal} />}
+            {activeModal === 'payment' && <Payment isOpen onClose={closeModal} />}
+
+            {activeModal === 'logout' && (
+                <Logout
+                    isOpen
+                    onClose={closeModal}
+                    onUserLogout={() => {
+                        logout();
+                        closeModal();
                     }}
                 />
             )}
 
-            {activeModal === 'SendCode' && (
-                <SendCode
+            {activeModal === 'newPassword' && (
+                <NewPassword
                     isOpen
                     onClose={closeModal}
-                    email={userEmail}
-                    onCodeVerified={() => setActiveModal('CreatePassword')}
+                    emailOrPhone={emailOrPhone}
+                    onPasswordCreated={() => openModal('forgotComplete')}
                 />
             )}
 
-            {activeModal === 'CreatePassword' && (
-                <CreatePassword
+            {activeModal === 'verifyCode' && (
+                <VerifyCode
                     isOpen
                     onClose={closeModal}
-                    email={userEmail}
-                    onPasswordCreated={() => setActiveModal('RegistrationComplete')}
+                    emailOrPhone={emailOrPhone}
+                    onVerified={() => openModal('newPassword')}
                 />
             )}
 
-            {activeModal === 'RegistrationComplete' && (
-                <RegistrationComplete
-                    isOpen
-                    onClose={closeModal}
-                    email={userEmail}
-                />
+            {activeModal === 'forgotComplete' && (
+                <ForgotComplete isOpen onClose={closeModal} email={emailOrPhone} />
             )}
 
-            {activeModal === 'Device' && <Device isOpen onClose={closeModal} />}
-            {activeModal === 'Payment' && <Payment isOpen onClose={closeModal} />}
-            {activeModal === 'Logout' && (
-                <Logout
-                    isOpen
+            {activeModal?.type === 'actorRecs' && (
+                <ActorRecommendations
+                    actor={activeModal.actor}
+                    allContent={allContent}
                     onClose={closeModal}
-                    onUserLogout={logout}
                 />
             )}
-        </BrowserRouter>
+        </>
     );
 };
