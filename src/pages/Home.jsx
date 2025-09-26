@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
-import { fakeCategories, fakeContent, fakeSlides, } from '../services/api';
+import { fakeCategories, fakeContent, fakeSlides, getMenuItems, getWatchModeItems, getStarsActors } from '../services/api';
 import { Trans } from 'react-i18next';
 import '../i18n/i18n';
 
@@ -37,6 +37,9 @@ export const Home = ({ onOpenActorRecs }) => {
     const filmsRefs = useRef({});
     const [scrollStates, setScrollStates] = useState({});
     const [isVolumeActive, setIsVolumeActive] = useState(false);
+    const [menuItems, setMenuItems] = useState([]);
+    const [watchModeItems, setWatchModeItems] = useState([]);
+    const [starsActors, setStarsActors] = useState([]);
 
     const toggleVolume = () => {
         setIsVolumeActive(prev => !prev);
@@ -79,31 +82,6 @@ export const Home = ({ onOpenActorRecs }) => {
         }
     };
 
-    const menuItems = [
-        { id: 'funny', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Funny.png' },
-        { id: 'relax', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Pleased.png' },
-        { id: 'sad', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Sad.png' },
-        { id: 'romance', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Cute.png' },
-        { id: 'thrill', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Horrors.png' },
-        { id: 'excite', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794854/Stars.png' },
-        { id: 'surprise', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Magic.png' },
-        { id: 'scare', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Horrors.png' },
-    ];
-
-    const watchModeItems = [
-        { id: 'alone', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Secret.png' },
-        { id: 'together', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794855/Love.png' },
-        { id: 'group', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794853/Popcorn.png' },
-        { id: 'family', emoji: 'https://res.cloudinary.com/da9jqs8yq/image/upload/v1756794855/Sofa.png' },
-    ];
-
-    const starsActors = [
-        { id: 'statham', nameKey: 'stars.actors.statham', className: 'home_stars_actor_statham', quoteKey: 'recommendations.quotes.statham'},
-        { id: 'garfield', nameKey: 'stars.actors.garfield', className: 'home_stars_actor_garfield', quoteKey: 'recommendations.quotes.garfield'},
-        { id: 'cage', nameKey: 'stars.actors.cage', className: 'home_stars_actor_cage', quoteKey: 'recommendations.quotes.cage'},
-        { id: 'downey', nameKey: 'stars.actors.downey', className: 'home_stars_actor_downey', quoteKey: 'recommendations.quotes.downey'},
-    ];
-
     const toggleFilmSave = (filmId) => {
         setSavedFilms((prev) =>
             prev.includes(filmId)
@@ -116,8 +94,8 @@ export const Home = ({ onOpenActorRecs }) => {
         onOpenActorRecs(actor);
     };
 
-    const selectedMenuItem = menuItems.find(item => item.id === selectedItemId) || menuItems[0];
-    const selectedWatchModeItem = watchModeItems.find(item => item.id === selectedWatchModeId) || watchModeItems[0];
+    const selectedMenuItem = menuItems.find(item => item.id === selectedItemId) || menuItems[0] || {};
+    const selectedWatchModeItem = watchModeItems.find(item => item.id === selectedWatchModeId) || watchModeItems[0] || {};
 
     useEffect(() => {
         const savedCategories = localStorage.getItem('activeCategories');
@@ -142,6 +120,16 @@ export const Home = ({ onOpenActorRecs }) => {
     }, []);
 
     useEffect(() => {
+        const loadAuxiliaryData = async () => {
+            try {
+                setMenuItems(await getMenuItems());
+                setWatchModeItems(await getWatchModeItems());
+                setStarsActors(await getStarsActors());
+            } catch (err) {
+                console.error("Помилка завантаження допоміжних даних:", err);
+            }
+        };
+
         const loadInitialData = async () => {
             try {
                 const loadedSlides = await fakeSlides();
@@ -156,15 +144,16 @@ export const Home = ({ onOpenActorRecs }) => {
 
                 setAllContent(loadedAllContent);
                 setFilteredContent(loadedAllContent);
+
+                await loadAuxiliaryData();
             } catch (err) {
-                console.error(err);
+                console.error("Ошибка загрузки данных:", err);
                 setError(<Trans i18nKey="home.errorLoading" />);
             }
         };
 
         void loadInitialData();
     }, []);
-
     useEffect(() => {
         if (activeCategories.length === 0) {
             setFilteredContent(allContent);
@@ -384,27 +373,27 @@ export const Home = ({ onOpenActorRecs }) => {
                                      onMouseMove={(e) => handleFilmsMouseMove(e, sub.id)} onScroll={() => handleScroll(sub.id)} ref={setFilmRef(sub.id)}>
 
                                     <div className="home_films">
-                                    {sub.films.map(film => (
-                                        <div key={film.id} className="home_film_card" onMouseEnter={() => setSelectedItemId(film.id)} onMouseLeave={() => setSelectedItemId(null)}>
-                                            <img src={selectedItemId === film.id ? film.hoverImage : film.image} alt={film.title} className="film_img"/>
-                                            <div className="home_film_header">
-                                                <div className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`} data-tooltip="Дивитимуся" onClick={() => toggleFilmSave(film.id)}/>
-                                                <div className="home_film_repost home_film_action" data-tooltip="Поділитися"/>
-                                                <div className="home_film_remuve home_film_action" data-tooltip="Не подобається"/>
-                                            </div>
-
-                                            <div className="home_film_text">
-                                                <div className="home_film_rating">{film.rating}</div>
-                                                <div className="home_film_line">
-                                                    <div className="home_film_line1"><span className="home_film_date"><Trans i18nKey={`films.${film.id}.linedate`} /></span>      <Trans i18nKey={`films.${film.id}.line1`} /></div>
-                                                    <div className="home_film_line2"><Trans i18nKey={`films.${film.id}.line2`} /></div>
+                                        {sub.films.map(film => (
+                                            <div key={film.id} className="home_film_card" onMouseEnter={() => setSelectedItemId(film.id)} onMouseLeave={() => setSelectedItemId(null)}>
+                                                <img src={selectedItemId === film.id ? film.hoverImage : film.image} alt={film.title} className="film_img"/>
+                                                <div className="home_film_header">
+                                                    <div className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`} data-tooltip="Дивитимуся" onClick={() => toggleFilmSave(film.id)}/>
+                                                    <div className="home_film_repost home_film_action" data-tooltip="Поділитися"/>
+                                                    <div className="home_film_remuve home_film_action" data-tooltip="Не подобається"/>
                                                 </div>
-                                                <div className="home_film_season"><Trans i18nKey={`films.${film.id}.season`} /></div>
-                                            </div>
-                                        </div>
 
-                                    ))}
-                                </div>
+                                                <div className="home_film_text">
+                                                    <div className="home_film_rating">{film.rating}</div>
+                                                    <div className="home_film_line">
+                                                        <div className="home_film_line1"><span className="home_film_date"><Trans i18nKey={`films.${film.id}.linedate`} /></span>      <Trans i18nKey={`films.${film.id}.line1`} /></div>
+                                                        <div className="home_film_line2"><Trans i18nKey={`films.${film.id}.line2`} /></div>
+                                                    </div>
+                                                    <div className="home_film_season"><Trans i18nKey={`films.${film.id}.season`} /></div>
+                                                </div>
+                                            </div>
+
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         ))
