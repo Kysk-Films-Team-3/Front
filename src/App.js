@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes/AppRoutes';
 import { Login } from './components/modal/Login';
 import { Forgot } from './components/modal/Forgot';
+import { Profile } from './components/modal/Profile';
 import { Registration } from './components/modal/Registration';
 import { SendCode } from './components/modal/SendCode';
 import { CreatePassword } from './components/modal/CreatePassword';
@@ -33,16 +34,7 @@ export const App = () => {
 };
 
 const AppContent = () => {
-    const {
-        activeModal,
-        openModal,
-        closeModal,
-        emailOrPhone,
-        setEmailOrPhone,
-        logout,
-        user,
-        allContent,
-    } = useContext(AuthContext);
+    const {activeModal, openModal, closeModal, emailOrPhone, setEmailOrPhone, logout, user, allContent,} = useContext(AuthContext);
 
     return (
         <>
@@ -52,6 +44,7 @@ const AppContent = () => {
                 onPaymentClick={() => openModal('payment')}
                 onOpenLogoutModal={() => openModal('logout')}
                 onOpenActorRecs={(actor) => openModal({ type: 'actorRecs', actor })}
+                onProfileClick={() => openModal('profile')}
                 user={user}
                 isLoggedIn={!!user}
             />
@@ -148,6 +141,14 @@ const AppContent = () => {
                     actor={activeModal.actor}
                     allContent={allContent}
                     onClose={closeModal}
+                />
+            )}
+
+            {activeModal === 'profile' && (
+                <Profile
+                    isOpen
+                    onClose={closeModal}
+                    user={user}
                 />
             )}
         </>

@@ -1,9 +1,7 @@
-.settings_pages{
-    background-color: #262630;
-}
 
 .settings_page {
     color: #F8F8FE;
+    background-color: #262630;
     padding: 130px 0 0 60px;
     z-index: 1001;
     font-family: 'Raleway', sans-serif;

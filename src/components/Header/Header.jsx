@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import './Header.css';
 import { getPopularFilms, getPopularActors } from '../../services/api';
 
-export const Header = ({ onLoginClick, user }) => {
+export const Header = ({ onLoginClick, user, onProfileClick }) => {
     const { t, i18n } = useTranslation();
     const location = useLocation();
     const isPremiumPage = location.pathname === '/Premium';
@@ -114,11 +114,7 @@ export const Header = ({ onLoginClick, user }) => {
             <div className="header_container">
                 <div className="header_left">
                     <Link to="/" className="logo">
-                        <img
-                            src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754083133/Logo.png"
-                            className="header_logo"
-                            alt="Logo"
-                        />
+                        <img src="https://res.cloudinary.com/da9jqs8yq/image/upload/v1754083133/Logo.png" className="header_logo" alt="Logo"/>
                     </Link>
 
                     {!isSearchOpen && !isPremiumPage && (
@@ -127,7 +123,7 @@ export const Header = ({ onLoginClick, user }) => {
                             <NavLink to="/catalog"><Trans i18nKey="header.nav.catalog" /></NavLink>
                             <NavLink to="/tv"><Trans i18nKey="header.nav.tvShows" /></NavLink>
                             <NavLink to="/new"><Trans i18nKey="header.nav.newAndPopular" /></NavLink>
-                            <NavLink to="/favorites"><Trans i18nKey="header.nav.favorites" /></NavLink>
+                            <NavLink to="/Favorites"><Trans i18nKey="header.nav.favorites" /></NavLink>
                         </nav>
                     )}
 
@@ -265,10 +261,10 @@ export const Header = ({ onLoginClick, user }) => {
                                     <hr className="divider" />
                                     <ul>
                                         <li>
-                                            <Link to="/profile" onClick={handleMenuItemClick} className="dropdown_link">
+                                            <button onClick={() => {onProfileClick();  handleMenuItemClick();}} className="dropdown_link">
                                                 <div className="dropdown_icon manage_icon"></div>
                                                 <Trans i18nKey="header.dropdown.manageProfile" />
-                                            </Link>
+                                            </button>
                                         </li>
                                         <li>
                                             <Link to="/settings" onClick={handleMenuItemClick} className="dropdown_link">
