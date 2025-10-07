@@ -17,6 +17,7 @@ import { Logout } from './components/modal/Logout';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { ActorProvider } from './context/ActorContext';
+import { FavoritesProvider } from './context/FavoritesContext';
 import { ActorRecommendations } from './components/modal/ActorRecommendations';
 
 export const App = () => {
@@ -24,9 +25,11 @@ export const App = () => {
         <AuthProvider>
             <SettingsProvider>
                 <ActorProvider>
-                    <BrowserRouter>
-                        <AppContent />
-                    </BrowserRouter>
+                    <FavoritesProvider>
+                        <BrowserRouter>
+                            <AppContent />
+                        </BrowserRouter>
+                    </FavoritesProvider>
                 </ActorProvider>
             </SettingsProvider>
         </AuthProvider>

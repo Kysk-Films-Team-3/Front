@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
 import { fakeCategories, fakeContent, fakeSlides, getMenuItems, getWatchModeItems, getStarsActors } from '../services/api';
-import { Trans } from 'react-i18next';
+import { useFavorites } from '../context/FavoritesContext';
+import {Trans, useTranslation} from 'react-i18next';
 import '../i18n/i18n';
 
 export const Home = ({ onOpenActorRecs }) => {
@@ -40,6 +41,9 @@ export const Home = ({ onOpenActorRecs }) => {
     const [menuItems, setMenuItems] = useState([]);
     const [watchModeItems, setWatchModeItems] = useState([]);
     const [starsActors, setStarsActors] = useState([]);
+    const { t } = useTranslation();
+    const { favorites, toggleFavorite } = useFavorites();
+
 
     const toggleVolume = () => {
         setIsVolumeActive(prev => !prev);
@@ -377,9 +381,26 @@ export const Home = ({ onOpenActorRecs }) => {
                                             <div key={film.id} className="home_film_card" onMouseEnter={() => setSelectedItemId(film.id)} onMouseLeave={() => setSelectedItemId(null)}>
                                                 <img src={selectedItemId === film.id ? film.hoverImage : film.image} alt={film.title} className="film_img"/>
                                                 <div className="home_film_header">
-                                                    <div className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`} data-tooltip="Дивитимуся" onClick={() => toggleFilmSave(film.id)}/>
-                                                    <div className="home_film_repost home_film_action" data-tooltip="Поділитися"/>
-                                                    <div className="home_film_remuve home_film_action" data-tooltip="Не подобається"/>
+                                                    <div
+                                                        className={`home_film_save home_film_action ${favorites.some(f => f.id === film.id) ? "active" : ""}`}
+                                                        data-tooltip={t('tooltip.watch')}
+                                                        onClick={() =>
+                                                            toggleFavorite({
+                                                                id: film.id,
+                                                                image: film.image,
+                                                                hoverImage: film.hoverImage,
+                                                                rating: film.rating,
+                                                                linedate: `films.${film.id}.linedate`,
+                                                                line1: `films.${film.id}.line1`,
+                                                                line2: film.line2 ? `films.${film.id}.line2` : undefined,
+                                                                season: film.season ? `films.${film.id}.season` : undefined,
+                                                                source: 'home',
+                                                            })
+                                                        }
+                                                    />
+
+                                                    <div className="home_film_repost home_film_action" data-tooltip={t('tooltip.share')}/>
+                                                    <div className="home_film_remuve home_film_action" data-tooltip={t('tooltip.dislike')}/>
                                                 </div>
 
                                                 <div className="home_film_text">
@@ -515,9 +536,26 @@ export const Home = ({ onOpenActorRecs }) => {
                                                     <div key={film.id} className="home_film_card" onMouseEnter={() => setSelectedItemId(film.id)} onMouseLeave={() => setSelectedItemId(null)}>
                                                         <img src={selectedItemId === film.id ? film.hoverImage : film.image} alt={film.title} className="film_img"/>
                                                         <div className="home_film_header">
-                                                            <div className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`} data-tooltip="Дивитимуся" onClick={() => toggleFilmSave(film.id)}/>
-                                                            <div className="home_film_repost home_film_action" data-tooltip="Поділитися"/>
-                                                            <div className="home_film_remuve home_film_action" data-tooltip="Не подобається"/>
+                                                            <div
+                                                                className={`home_film_save home_film_action ${favorites.some(f => f.id === film.id) ? "active" : ""}`}
+                                                                data-tooltip={t('tooltip.watch')}
+                                                                onClick={() =>
+                                                                    toggleFavorite({
+                                                                        id: film.id,
+                                                                        image: film.image,
+                                                                        hoverImage: film.hoverImage,
+                                                                        rating: film.rating,
+                                                                        linedate: `films.${film.id}.linedate`,
+                                                                        line1: `films.${film.id}.line1`,
+                                                                        line2: film.line2 ? `films.${film.id}.line2` : undefined,
+                                                                        season: film.season ? `films.${film.id}.season` : undefined,
+                                                                        source: 'home',
+                                                                    })
+                                                                }
+                                                            />
+
+                                                            <div className="home_film_repost home_film_action" data-tooltip={t('tooltip.share')}/>
+                                                            <div className="home_film_remuve home_film_action" data-tooltip={t('tooltip.dislike')}/>
                                                         </div>
 
                                                         <div className="home_film_text">
@@ -594,9 +632,30 @@ export const Home = ({ onOpenActorRecs }) => {
                                             <div key={film.id} className="home_film_card" onMouseEnter={() => setSelectedItemId(film.id)} onMouseLeave={() => setSelectedItemId(null)}>
                                                 <img src={selectedItemId === film.id ? film.hoverImage : film.image} alt={film.title} className="film_img"/>
                                                 <div className="home_film_header">
-                                                    <div className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`} data-tooltip="Дивитимуся" onClick={() => toggleFilmSave(film.id)}/>
-                                                    <div className="home_film_repost home_film_action" data-tooltip="Поділитися"/>
-                                                    <div className="home_film_remuve home_film_action" data-tooltip="Не подобається"/>
+                                                    <div
+                                                        className={`home_film_save home_film_action ${savedFilms.includes(film.id) ? "active" : ""}`}
+                                                        data-tooltip={t('tooltip.watch')}
+                                                        onClick={() =>
+                                                            toggleFavorite({
+                                                                id: film.id,
+                                                                image: film.image,
+                                                                hoverImage: film.hoverImage,
+                                                                rating: film.rating,
+                                                                linedate: `films.${film.id}.linedate`,
+                                                                line1: `films.${film.id}.line1`,
+                                                                line2: film.line2 ? `films.${film.id}.line2` : undefined,
+                                                                season: film.season ? `films.${film.id}.season` : undefined,
+                                                                source: 'home',
+                                                            })
+                                                        }
+
+
+                                                    />
+
+
+
+                                                    <div className="home_film_repost home_film_action" data-tooltip={t('tooltip.share')}/>
+                                                    <div className="home_film_remuve home_film_action" data-tooltip={t('tooltip.dislike')}/>
                                                 </div>
 
                                                 <div className="home_film_text">

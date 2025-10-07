@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import './Profile.css';
 import { AuthContext } from '../../context/AuthContext';
 
 export const Profile = ({ onClose }) => {
     const { user } = useContext(AuthContext);
     const profileRef = useRef(null);
+    const { t } = useTranslation();
 
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -18,14 +20,11 @@ export const Profile = ({ onClose }) => {
         }
     }, [user]);
 
+    const canSave = name.trim() !== '' && lastName.trim() !== '' && nickname.trim() !== '';
+
     const handleSave = () => {
         if (!canSave) return;
-
-        const updatedProfile = {
-            name: name,
-            lastName: lastName,
-            nickname: nickname,
-        };
+        const updatedProfile = { name, lastName, nickname };
         console.log('Дані для збереження:', updatedProfile);
         onClose();
     };
@@ -46,17 +45,20 @@ export const Profile = ({ onClose }) => {
         };
     }, [onClose]);
 
-    const canSave = name.trim() !== '' && lastName.trim() !== '' && nickname.trim() !== '';
-
     if (!user) return null;
 
     return (
         <div className="profile_overlay" role="dialog" aria-modal="true">
             <div className="profile_modal" ref={profileRef}>
                 <div className="profile_close_icon" onClick={onClose}></div>
-                <div className="profile_title">Редагування профілю</div>
+
+                <div className="profile_title">
+                    <Trans i18nKey="profile.editTitle" />
+                </div>
+
                 <div className="profile_content">
                     <div className="profile_avatar"></div>
+
                     <div className="profile_inputs_wrapper">
                         <div className="profile_input_block">
                             <input
@@ -67,8 +69,11 @@ export const Profile = ({ onClose }) => {
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                             />
-                            <label htmlFor="profileName">Ім'я</label>
+                            <label htmlFor="profileName">
+                                <Trans i18nKey="profile.firstName" />
+                            </label>
                         </div>
+
                         <div className="profile_input_block">
                             <input
                                 type="text"
@@ -78,8 +83,11 @@ export const Profile = ({ onClose }) => {
                                 value={lastName}
                                 onChange={e => setLastName(e.target.value)}
                             />
-                            <label htmlFor="profileLastName">Прізвище</label>
+                            <label htmlFor="profileLastName">
+                                <Trans i18nKey="profile.lastName" />
+                            </label>
                         </div>
+
                         <div className="profile_input_block">
                             <input
                                 type="text"
@@ -89,18 +97,23 @@ export const Profile = ({ onClose }) => {
                                 value={nickname}
                                 onChange={e => setNickname(e.target.value)}
                             />
-                            <label htmlFor="profileNickname">Нікнейм</label>
+                            <label htmlFor="profileNickname">
+                                <Trans i18nKey="profile.nickname" />
+                            </label>
                         </div>
                     </div>
                 </div>
+
                 <div className="profile_button_block">
-                    <button className="profile_button_exit" onClick={onClose}>Вийти</button>
+                    <button className="profile_button_exit" onClick={onClose}>
+                        <Trans i18nKey="profile.exit" />
+                    </button>
                     <button
                         className={`profile_button_save ${canSave ? 'active' : ''}`}
                         onClick={handleSave}
                         disabled={!canSave}
                     >
-                        Зберегти
+                        <Trans i18nKey="profile.save" />
                     </button>
                 </div>
             </div>

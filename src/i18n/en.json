@@ -412,8 +412,28 @@
         "line2": "Movie"
       }
     }
-  }
+  },
 
+
+  "tooltip": {
+    "watch": "Watch later",
+    "share": "Share",
+    "dislike": "Dislike"
+  },
+
+  "profile": {
+    "editTitle": "Edit Profile",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "nickname": "Nickname",
+    "exit": "Exit",
+    "save": "Save"
+  },
+
+  "favorites": {
+    "title": "Favorite",
+    "empty": "There is no favorite yet"
+  }
 
 }
 
