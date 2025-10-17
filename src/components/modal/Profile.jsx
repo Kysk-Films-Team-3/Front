@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import './Profile.css';
-import { AuthContext } from '../../context/AuthContext';
 
-export const Profile = ({ onClose }) => {
-    const { user } = useContext(AuthContext);
+export const Profile = ({ isOpen, onClose }) => {
     const profileRef = useRef(null);
     const { t } = useTranslation();
 
@@ -13,25 +11,27 @@ export const Profile = ({ onClose }) => {
     const [nickname, setNickname] = useState('');
 
     useEffect(() => {
-        if (user) {
-            setName(user.name || user.emailOrPhone.split('@')[0]);
-            setLastName(user.lastName || '');
-            setNickname(user.nickname || '');
-        }
-    }, [user]);
+        // Мок-пользователь внутри useEffect
+        const user = { name: 'John', lastName: 'Doe', nickname: 'johndoe' };
 
-    const canSave = name.trim() !== '' && lastName.trim() !== '' && nickname.trim() !== '';
+        setName(user.name);
+        setLastName(user.lastName);
+        setNickname(user.nickname);
+    }, []); // теперь зависимостей нет, ESLint больше не ругается
+
+    const canSave = name.trim() && lastName.trim() && nickname.trim();
 
     const handleSave = () => {
         if (!canSave) return;
-        const updatedProfile = { name, lastName, nickname };
-        console.log('Дані для збереження:', updatedProfile);
+        console.log('Дані для збереження:', { name, lastName, nickname });
         onClose();
     };
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (profileRef.current && !profileRef.current.contains(event.target)) {
+        if (!isOpen) return;
+
+        const handleClickOutside = (e) => {
+            if (profileRef.current && !profileRef.current.contains(e.target)) {
                 onClose();
             }
         };
@@ -43,9 +43,9 @@ export const Profile = ({ onClose }) => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
         };
-    }, [onClose]);
+    }, [isOpen, onClose]);
 
-    if (!user) return null;
+    if (!isOpen) return null;
 
     return (
         <div className="profile_overlay" role="dialog" aria-modal="true">

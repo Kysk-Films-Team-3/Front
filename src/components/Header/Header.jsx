@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import {NavLink, Link, useLocation, Route} from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import './Header.css';
 import { getPopularFilms, getPopularActors } from '../../services/api';
+import { useKeycloak } from '@react-keycloak/web';
 
 export const Header = ({ onLoginClick, user, onProfileClick }) => {
     const { t, i18n } = useTranslation();
     const location = useLocation();
+    const { keycloak } = useKeycloak();
     const isPremiumPage = location.pathname === '/Premium';
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -16,6 +18,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
     const [popularFilms, setPopularFilms] = useState([]);
     const [popularActors, setPopularActors] = useState([]);
     const dropdownRef = useRef(null);
+    const isLoggedIn = keycloak?.authenticated || !!user;
 
     useEffect(() => {
         const savedLang = localStorage.getItem('lang');
@@ -91,6 +94,13 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
         }
     };
 
+    const handleLogin = () => {
+        if (keycloak) {
+            keycloak.login();
+        }
+    };
+
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest('.header_profile_switch')) {
@@ -121,7 +131,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
                         <nav className="header_nav">
                             <NavLink to="/" end><Trans i18nKey="header.nav.home" /></NavLink>
                             <NavLink to="/catalog"><Trans i18nKey="header.nav.catalog" /></NavLink>
-                            <NavLink to="/tv"><Trans i18nKey="header.nav.tvShows" /></NavLink>
+                            <NavLink to="/Login"><Trans i18nKey="header.nav.tvShows" /></NavLink>
                             <NavLink to="/new"><Trans i18nKey="header.nav.newAndPopular" /></NavLink>
                             <NavLink to="/Favorites"><Trans i18nKey="header.nav.favorites" /></NavLink>
                         </nav>
@@ -238,7 +248,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
                         <span className="header_promo_text"><Trans i18nKey="header.promo" /></span>
                     </div>
 
-                    {user ? (
+                    {isLoggedIn ? (
                         <div className="header_profile">
                             <div onClick={toggleDropdown} className="header_profile_switch">
                                 <div className={`header_arrow ${isDropdownOpen ? 'open' : ''}`} aria-label={isDropdownOpen ? 'Закрити меню' : 'Відкрити меню'} />
@@ -252,7 +262,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
                                             <div className="header_avatar" />
                                             <div className="profile_text_block">
                                                 <div className="profile_name">
-                                                    {user?.emailOrPhone ? user.emailOrPhone.split('@')[0] : ''}
+                                                    {keycloak?.tokenParsed?.preferred_username || user?.emailOrPhone?.split('@')[0] || 'User'}
                                                 </div>
                                             </div>
                                         </div>
@@ -261,7 +271,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
                                     <hr className="divider" />
                                     <ul>
                                         <li>
-                                            <button onClick={() => {onProfileClick();  handleMenuItemClick();}} className="dropdown_link">
+                                            <button onClick={() => {onProfileClick();  handleMenuItemClick();}}  className="dropdown_link">
                                                 <div className="dropdown_icon manage_icon"></div>
                                                 <Trans i18nKey="header.dropdown.manageProfile" />
                                             </button>
@@ -290,7 +300,7 @@ export const Header = ({ onLoginClick, user, onProfileClick }) => {
                             )}
                         </div>
                     ) : (
-                        <div onClick={onLoginClick} className="header_log_button">
+                        <div onClick={handleLogin} className="header_log_button">
                             <div className="log_button_icon"></div>
                             <span><Trans i18nKey="header.login" /></span>
                         </div>

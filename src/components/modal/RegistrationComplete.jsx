@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegistrationComplete.css';
-import { AuthContext } from '../../context/AuthContext';
 import { Trans } from 'react-i18next';
 
 export const RegistrationComplete = ({ onClose }) => {
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const regcompleteRef = useRef(null);
 
@@ -30,20 +28,17 @@ export const RegistrationComplete = ({ onClose }) => {
         };
     }, [onClose]);
 
-    if (!user) return null;
-
     return (
         <div className="registration_complete_overlay" role="dialog" aria-modal="true">
             <div className="registration_complete_modal" ref={regcompleteRef}>
                 <div className="registration_complete_close_icon" onClick={onClose}></div>
+
                 <div className="registration_complete_title">
                     <Trans i18nKey="registrationComplete.title" />
                 </div>
+
                 <div className="registration_complete_subtitle t-text-preline">
-                    <Trans
-                        i18nKey="registrationComplete.subtitle"
-                        values={{ email: user.emailOrPhone }}
-                    />
+                    <Trans i18nKey="registrationComplete.subtitle" />
                 </div>
 
                 <div className="registration_complete_button_block">

@@ -1,158 +1,86 @@
-import React, { useContext } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { AppRoutes } from './routes/AppRoutes';
-import { Login } from './components/modal/Login';
-import { Forgot } from './components/modal/Forgot';
 import { Profile } from './components/modal/Profile';
-import { Registration } from './components/modal/Registration';
-import { SendCode } from './components/modal/SendCode';
-import { CreatePassword } from './components/modal/CreatePassword';
-import { RegistrationComplete } from './components/modal/RegistrationComplete';
-import { NewPassword } from './components/modal/NewPassword';
-import { ForgotComplete } from './components/modal/ForgotComplete';
-import { VerifyCode } from './components/modal/VerifyCode';
 import { Device } from './components/modal/Device';
 import { Payment } from './components/modal/Payment';
 import { Logout } from './components/modal/Logout';
-import { AuthProvider, AuthContext } from './context/AuthContext';
+import { ActorRecommendations } from './components/modal/ActorRecommendations';
+import { RegistrationComplete } from './components/modal/RegistrationComplete';
+import { ForgotComplete } from './components/modal/ForgotComplete';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import { keycloak } from './services/keycloak';
+import { ModalsProvider, useModals } from './context/ModalsContext';
+import { FavoritesProvider } from './context/FavoritesContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { ActorProvider } from './context/ActorContext';
-import { FavoritesProvider } from './context/FavoritesContext';
-import { ActorRecommendations } from './components/modal/ActorRecommendations';
 
-export const App = () => {
-    return (
-        <AuthProvider>
-            <SettingsProvider>
-                <ActorProvider>
-                    <FavoritesProvider>
+export const App = () => (
+    <ReactKeycloakProvider
+        authClient={keycloak}
+        initOptions={{ onLoad: 'check-sso', checkLoginIframe: false }}
+    >
+        <SettingsProvider>
+            <ActorProvider>
+                <FavoritesProvider>
+                    <ModalsProvider>
                         <BrowserRouter>
                             <AppContent />
                         </BrowserRouter>
-                    </FavoritesProvider>
-                </ActorProvider>
-            </SettingsProvider>
-        </AuthProvider>
-    );
-};
+                    </ModalsProvider>
+                </FavoritesProvider>
+            </ActorProvider>
+        </SettingsProvider>
+    </ReactKeycloakProvider>
+);
 
 const AppContent = () => {
-    const {activeModal, openModal, closeModal, emailOrPhone, setEmailOrPhone, logout, user, allContent,} = useContext(AuthContext);
+    const { activeModal, openModal, closeModal } = useModals();
+    const location = useLocation();
+    const shownRegistrationRef = useRef(false);
+    const shownPasswordResetRef = useRef(false);
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+
+        if (params.get('accountCreated') === 'true' && !shownRegistrationRef.current) {
+            shownRegistrationRef.current = true;
+            openModal('registrationComplete');
+            window.history.replaceState({}, document.title, '/');
+        }
+
+        if (params.get('passwordReset') === 'true' && !shownPasswordResetRef.current) {
+            shownPasswordResetRef.current = true;
+            openModal('forgotComplete');
+            window.history.replaceState({}, document.title, '/');
+        }
+
+    }, [location, openModal]);
+
 
     return (
         <>
             <AppRoutes
                 onLoginClick={() => openModal('login')}
+                isLoggedIn={false}
                 onDeviceClick={() => openModal('device')}
                 onPaymentClick={() => openModal('payment')}
                 onOpenLogoutModal={() => openModal('logout')}
                 onOpenActorRecs={(actor) => openModal({ type: 'actorRecs', actor })}
                 onProfileClick={() => openModal('profile')}
-                user={user}
-                isLoggedIn={!!user}
             />
-
-            {activeModal === 'login' && (
-                <Login
-                    isOpen
-                    onClose={closeModal}
-                    onForgot={() => openModal('forgot')}
-                    onRegisterClick={() => openModal('registration')}
-                    setEmailOrPhone={setEmailOrPhone}
-                />
-            )}
-
-            {activeModal === 'forgot' && (
-                <Forgot
-                    isOpen
-                    onClose={closeModal}
-                    setEmailOrPhone={setEmailOrPhone}
-                    onSuccess={(email) => {
-                        setEmailOrPhone(email);
-                        openModal('verifyCode');
-                    }}
-                />
-            )}
-
-            {activeModal === 'registration' && (
-                <Registration
-                    isOpen
-                    onClose={closeModal}
-                    onRegisterSuccess={() => openModal('sendCode')}
-                    setEmailOrPhone={setEmailOrPhone}
-                />
-            )}
-
-            {activeModal === 'sendCode' && (
-                <SendCode
-                    isOpen
-                    onClose={closeModal}
-                    onCodeVerified={() => openModal('createPassword')}
-                />
-            )}
-
-            {activeModal === 'createPassword' && (
-                <CreatePassword
-                    isOpen
-                    onClose={closeModal}
-                    onPasswordCreated={() => openModal('registrationComplete')}
-                />
-            )}
-
-            {activeModal === 'registrationComplete' && (
-                <RegistrationComplete isOpen onClose={closeModal} />
-            )}
 
             {activeModal === 'device' && <Device isOpen onClose={closeModal} />}
             {activeModal === 'payment' && <Payment isOpen onClose={closeModal} />}
-
-            {activeModal === 'logout' && (
-                <Logout
-                    isOpen
-                    onClose={closeModal}
-                    onUserLogout={() => {
-                        logout();
-                        closeModal();
-                    }}
-                />
-            )}
-
-            {activeModal === 'newPassword' && (
-                <NewPassword
-                    isOpen
-                    onClose={closeModal}
-                    emailOrPhone={emailOrPhone}
-                    onPasswordCreated={() => openModal('forgotComplete')}
-                />
-            )}
-
-            {activeModal === 'verifyCode' && (
-                <VerifyCode
-                    isOpen
-                    onClose={closeModal}
-                    emailOrPhone={emailOrPhone}
-                    onVerified={() => openModal('newPassword')}
-                />
-            )}
-
-            {activeModal === 'forgotComplete' && (
-                <ForgotComplete isOpen onClose={closeModal} email={emailOrPhone} />
-            )}
-
+            {activeModal === 'logout' && <Logout isOpen onClose={closeModal} />}
+            {activeModal === 'profile' && <Profile isOpen onClose={closeModal} />}
             {activeModal?.type === 'actorRecs' && (
-                <ActorRecommendations
-                    actor={activeModal.actor}
-                    allContent={allContent}
-                    onClose={closeModal}
-                />
+                <ActorRecommendations actor={activeModal.actor} onClose={closeModal} />
             )}
-
-            {activeModal === 'profile' && (
-                <Profile
-                    isOpen
-                    onClose={closeModal}
-                    user={user}
-                />
+            {activeModal === 'registrationComplete' && (
+                <RegistrationComplete isOpen onClose={closeModal} />
+            )}
+            {activeModal === 'forgotComplete' && (
+                <ForgotComplete isOpen onClose={closeModal} />
             )}
         </>
     );

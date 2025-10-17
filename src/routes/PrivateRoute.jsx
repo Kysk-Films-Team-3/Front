@@ -1,9 +1,15 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
 
-export const PrivateRoute = ({ isLoggedIn, children }) => {
+export const PrivateRoute = ({ children }) => {
     const location = useLocation();
+    const { keycloak } = useKeycloak();
 
-    if (isLoggedIn) {
+    if (keycloak?.authenticated === undefined) {
+        return null;
+    }
+
+    if (keycloak?.authenticated) {
         return children;
     }
 

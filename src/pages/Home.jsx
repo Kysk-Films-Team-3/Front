@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.css';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { fakeCategories, fakeContent, fakeSlides, getMenuItems, getWatchModeItems, getStarsActors } from '../services/api';
 import { useFavorites } from '../context/FavoritesContext';
 import {Trans, useTranslation} from 'react-i18next';
@@ -43,6 +43,7 @@ export const Home = ({ onOpenActorRecs }) => {
     const [starsActors, setStarsActors] = useState([]);
     const { t } = useTranslation();
     const { favorites, toggleFavorite } = useFavorites();
+    const location = useLocation();
 
 
     const toggleVolume = () => {
@@ -203,6 +204,8 @@ export const Home = ({ onOpenActorRecs }) => {
         }
     }, [selectedWatchModeId]);
 
+
+
     const handleMouseDown = (e) => {
         isDown.current = true;
         startX.current = e.pageX - categoriesRef.current.offsetLeft;
@@ -290,6 +293,7 @@ export const Home = ({ onOpenActorRecs }) => {
         const walk = (x - startX.current) * 2;
         el.scrollLeft = scrollLeft.current - walk;
     };
+
 
     return (
         <div className="home">
